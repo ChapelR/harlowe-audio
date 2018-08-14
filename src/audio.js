@@ -41,12 +41,14 @@
     var safeAudioStart = 100;
 
     var Audio = {
-        // hidden
+        // no API
+        classes : {},
+        // no API
         master : {
             volume : options.startingVol,
             mute : false
         },
-        // hidden
+        // no API
         groups : {
             playing : [],
             looping : [],
@@ -415,26 +417,32 @@
             return this;
         },
         fadeIn : function (duration) {
+            var self = this;
+            duration = duration || 1;
             var target = this.getVolume();
             this.volume(0);
+            this.play();
             this.$el.animate({ volume: target * Audio.master.volume }, duration * 1000, function () {
-                Track.emit(':volume', this);
-                Track.emit(':fade', this);
+                self.volume(target);
+                Track.emit(':volume', self);
+                Track.emit(':fade', self);
             });
             return this;
         },
         fadeOut : function (duration) {
+            duration = duration || 1;
             var self = this;
             var vol = this.getVolume();
             this.$el.animate({ volume: 0 }, duration * 1000, function () {
                 self.stop();
                 self.volume(vol);
-                Track.emit(':volume', this);
-                Track.emit(':fade', this);
+                Track.emit(':volume', self);
+                Track.emit(':fade', self);
             });
             return this;
         },
         fadeTo : function (duration, level) {
+            duration = duration || 1;
             var vol = this.getVolume();
             level = Number(level);
             if (!Number.isNaN(level)) {
@@ -446,10 +454,23 @@
             }
             this.volume(0);
             this.$el.animate({ volume: target * Audio.master.volume }, duration * 1000, function () {
-                Track.emit(':volume', this);
-                Track.emit(':fade', this);
+                Track.emit(':volume', self);
+                Track.emit(':fade', self);
             });
             return this;
+        },
+        delay : function (duration, cb) {
+            var self = this;
+            if (typeof cb !== 'function') {
+                return; // do nothing
+            }
+            duration = Number(duration);
+            if (Number.isNaN(duration) || duration < 0) {
+                duration = 0;
+            }
+            setTimeout( function () {
+                cb.call(self, self, duration);
+            }, duration);
         }
     };
 
@@ -480,7 +501,7 @@
         });
     }
 
-    Audio.Track = Track;
+    Audio.classes.Track = Track;
     Audio.newTrack = Track.add;
     Audio.track = function (id) {
         return Track.get(id);
@@ -663,7 +684,7 @@
 
     // Audio.playlist('myplaylist').play(); or Audio.playlist('myplaylist').loop(true);
 
-    Audio.Playlist = Playlist;
+    Audio.classes.Playlist = Playlist;
     Audio.createPlaylist = Playlist.add;
     Audio.playlist = function (id) {
         return Playlist.list[id] || null;
