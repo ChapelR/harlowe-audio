@@ -1,0 +1,3 @@
+:: Start
+<script>A.Track.add('piano', 'http://www.kozco.com/tech/piano2.wav');</script>
+(link: 'play')[ (set: _dummy to A.Track.get('piano').loop(true).play()) ]

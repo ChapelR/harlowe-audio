@@ -1,0 +1,37 @@
+{
+  "name": "harlowe-audio",
+  "version": "0.1.0",
+  "description": "Audio library for Twine2/Harlowe2.",
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "dependencies": {
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-clean-css": "^3.10.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-jshint": "^2.1.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-replace": "^1.0.0",
+    "gulp-uglify": "^3.0.1",
+    "jshint": "^2.9.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "tweego -f harlowe-2 -o test/index.html dist test/twee && start test/index.html",
+    "gulp": "gulp",
+    "clean": "gulp clean",
+    "build": "gulp build",
+    "go": "npm run build && npm test"
+  },
+  "keywords": [
+    "twine",
+    "audio",
+    "harlowe"
+  ],
+  "author": "Chapel",
+  "license": "Unlicense"
+}
