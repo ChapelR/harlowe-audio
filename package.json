@@ -33,5 +33,13 @@
     "harlowe"
   ],
   "author": "Chapel",
-  "license": "Unlicense"
+  "license": "Unlicense",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChapelR/harlowe-audio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ChapelR/harlowe-audio/issues"
+  },
+  "homepage": "https://github.com/ChapelR/harlowe-audio#readme"
 }
