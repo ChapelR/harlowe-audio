@@ -68,6 +68,12 @@
             },
             toggle : function () {
                 $panel.toggleClass('closed');
+            },
+            hide : function () {
+                $panel.css('display', 'none');
+            },
+            show : function () {
+                $panel.css('display', 'block');
             }
         };
     }

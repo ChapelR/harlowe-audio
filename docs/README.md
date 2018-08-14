@@ -6,7 +6,7 @@ This is an audio library designed for the [Twine 2](https://twinery.org/) story 
 
 ## Installation
 
-All you need to install this library is the code. There are two ways to get it: [copy and pasting from GitHub](https://github.com/ChapelR/harlowe-audio/tree/master/dist), or [via a Google Drive download](#drivelink). If you download the code, be sure to open it and mess with it in a text editor, *not* a word processor. Once you've got the code, you'll need to put in in you project.
+All you need to install this library is the code. There are two ways to get it: [copy and pasting from GitHub](https://github.com/ChapelR/harlowe-audio/tree/master/dist), or [via a Google Drive download](#drivelink). If you download the code, be sure to open it and mess with it in a text editor, *not* a word processor. Once you've got the code, you'll need to put in in your project.
 
 **In Twine 2 (online or standalone)**, copy and paste the code in `harlowe-audio.min.js` into your [Story JavaScript area](https://twinery.org/wiki/twine2:adding_custom_javascript_and_css), and the code in `harlowe-audio.min.css` into your Story Stylesheet area.
 
@@ -338,15 +338,337 @@ Returns the track's current volume; this is the track's volume state and does no
 
 ---
 
+## Master Audio Methods
+
+The master audio methods are used for controlling *all* sound in the game at once. The master audio does not change you tracks, instead it overrides them. For example, if you have the `'theme'` track muted and the `'beep'` track unmuted, `A.mute(true)` will make `'beep'` silent. `A.mute(false)` will not make `'theme'` audible, however. None of these methods are chainable.
+
+---
+
+- **the `A.mute(bool)` method**
+
+- Arguments: 
+    -`bool`: (boolen) if `true`, mutes all audio; if `false`, unmutes all audio.
+
+- Returns: none.
+
+Controls the master mute and unmute state.
+
+---
+
+- **the `A.volume(level)` method**
+
+- Arguments: 
+    -`level`: (number) a volume level between `0` and `1`.
+
+- Returns: none.
+
+Adjusts the master volume level.
+
+---
+
+- **the `A.stopAll()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Stops every track that is currently playing.
+
+---
+
+- **the `A.audioPlaying()` method**
+
+- Arguments: none.
+
+- Returns: boolean.
+
+Returns `true` is any audio at all is playing.
+
+---
+
+- **the `A.isMuted()` method**
+
+- Arguments: none.
+
+- Returns: boolean.
+
+Returns the state of the master mute.
+
+---
+
+- **the `A.getVolume()` method**
+
+- Arguments: none.
+
+- Returns: number (between 0 and 1).
+
+Returns the current level of the master volume.
+
+---
+
+- **the `A.clearPrefs()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Clears any user preferences that are saved in local storage.
+
+---
+
 ## Groups
+
+Groups are ways to collect and organize tracks, but should *not* be confused with playlists (read on for those). These are designed to allow you to select and control a large number of tracks and do something to them. The methods used by groups are very similar to some of the track methods, but as said, generally do something to all of them at once.
+
+There are two built-in groups, `'playing'` and `'looping'`, that can be used to control all currently playing and looping tracks. Additionally, you can define your own groups with `A.createGroup()`:
+
+```javascript
+A.createGroup('ui-sounds', 'beep', 'click', 'no');
+```
+
+The above code will create a new group called `'ui-sounds'`, with the tracks `'beep'`, `'click'`, and `'no'` as its members.
+
+You can then act on those sounds with `A.group()`. For example, you might create a setting in your game that allows the user to mute all UI audio sounds like clicks and beeps by creating the group, then:
+
+```
+{
+(link: 'Mute UI Sounds')[
+    <script>A.group('ui-sounds').mute(true);</script>
+]
+}
+```
+
+## Group Methods
+
+The methods you can use on groups are a smaller subset of the same ones you can use on tracks. All of these methods are chainable.
+
+---
+
+- **the `<group>.play()` method**
+
+- Arguments: none.
+
+- Returns: the group (chainable).
+
+Attempts to play every sound in the group. At once. Probably not useful, but included for completeness.
+
+---
+
+- **the `<group>.pause()` method**
+
+- Arguments: none.
+
+- Returns: the group (chainable).
+
+Pauses all the tracks in the group.
+
+---
+
+- **the `<group>.stop()` method**
+
+- Arguments: none.
+
+- Returns: the group (chainable).
+
+Stops all the sounds in the group.
+
+---
+
+- **the `<group>.mute(bool)` method**
+
+- Arguments: 
+    -`bool`: (boolen) if `true`, mutes the tracks; if `false`, unmutes them.
+
+- Returns: the group (chainable).
+
+Mutes or unmutes every track in the group.
+
+---
+
+- **the `<group>.volume(level)` method**
+
+- Arguments: 
+    -`level`: (number) a volume level between `0` and `1`.
+
+- Returns: the group (chainable).
+
+Adjusts all the volumes of all the tracks in the group.
+
+---
+
+- **the `<group>.loop(bool)` method**
+
+- Arguments: 
+    -`bool`: (boolen) if `true`, sets all the tracks to loop; if `false`, stops them from looping.
+
+- Returns: the group (chainable).
+
+Set the tracks to loop or stop them from looping.
+
+---
 
 ## Playlists
 
+Playlists are another way to group tracks, but have some special properties. Namely, each playlist itself can be looped (so that they play their tracks in order, then start over again from the first track afterward), and they can be used to select and play random tracks.
+
+You create playlists with the `A.createPlaylist()` method.
+
+```javascript
+A.createPlaylist('bgmusic', 'theme', 'cool-song', 'techno');
+```
+
+The above script will create a playlist named `'bgmusic'`, with `'theme'`, `'cool-song'`, and `'techno'` as its tracks.
+
+You can access and work on the playlist with the `A.playlist()` method:
+
+```javascript
+A.playlist('bgmusic').loop(true).shuffle().play();
+```
+
+The above code would cause the `'bgmusic'` to shuffle its tracks, then play them through on a loop.
+
+## Playlist Methods
+
+Like groups, playlists recieve a subset of track methods, along with a few methods of their own. Most of these methods are chainable.
+
+---
+
+- **the `<playlist>.play()` method**
+
+- Arguments: none.
+
+- Returns: the playlist (chainable).
+
+Plays the playlist. Every track will be played in order, one after another.
+
+---
+
+- **the `<playlist>.pause()` method**
+
+- Arguments: none.
+
+- Returns: the playlist (chainable).
+
+Pauses the playlist's playback.
+
+---
+
+- **the `<playlist>.stop()` method**
+
+- Arguments: none.
+
+- Returns: the playlist (chainable).
+
+Stops the playlist.
+
+---
+
+- **the `<playlist>.loop(bool)` method**
+
+- Arguments: 
+    - `bool`: (boolean) causes the playlist to repeat after it ends if `true`.
+
+- Returns: the playlist (chainable).
+
+Set the playlist to loop (not each track inside) or set it to stop looping.
+
+---
+
+- **the `<playlist>.random()` method**
+
+- Arguments: none.
+
+- Returns: a track.
+
+Returns a random track from the playlist--you can then use [track methods](#track-methods) on it.
+
+---
+
+- **the `<playlist>.shuffle()` method**
+
+- Arguments: none.
+
+- Returns: the playlist (chainable).
+
+Shuffles (randomizes) the playlist. Be warned: the default order cannot be restored without creating a new playlist.
+
+---
+
 ## Control Panel
+
+The control panel is a user interface for controlling the audio that is set up through this library. You can use it to give your players a mute button and a volume control without having to build these functions yourself.
+
+You may wish to alter the panels CSS to math your game. [Look here](https://github.com/ChapelR/harlowe-audio/blob/master/src/panel.css) to check out it's default styles.
+
+Some facets of the control panel can be controlled via JavaScript using the following methods:
+
+---
+
+- **the `A.controls.close()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Closes (shrinks) the panel.
+
+---
+
+- **the `A.controls.open()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Opens (expands) the panel.
+
+---
+
+- **the `A.controls.hide()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Hides the panel completely.
+
+---
+
+- **the `A.controls.show()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Makes the panel visible after hiding it.
+
+---
 
 # Detailed Examples
 
 Some more detailed examples of common use-cases.
+
+## Loading Audio Over the Network
+
+## Loading Audio with Relative Paths
+
+## Playing a Sound Only if It isn't Already Playing
+
+## Looping Background Music
+
+## Fading Music in and Out
+
+## Playing a Random Sound
+
+## Playing Sounds when Links are Clicked
+
+## Adjusting the Volume of a Sound
+
+## Stopping All Playing Sounds
+
+## Incidental Sound Effects
+
+## Stopping One Sound and Playing Another
 
 # API Reference
 
@@ -354,6 +676,11 @@ This part of the docs is intended for those more comfortable with JavaScript cod
 
 ## Audio Methods and Properties
 
+The `window.A` object is actually a reference to the `window.Chapel.Audio` object. This object contains the entire library, and has many methods and properties.
+
+...coming soon
+
+```
 ## Audio.group()
 
 ## Audio.track()
@@ -383,3 +710,4 @@ This part of the docs is intended for those more comfortable with JavaScript cod
 ## Audio Events
 
 ## Audio.controls
+```

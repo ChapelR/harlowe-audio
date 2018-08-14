@@ -566,21 +566,27 @@
         },
         play : function () {
             this.run('play');
+            return this;
         },
         pause : function () {
             this.run('pause');
+            return this;
         },
         stop : function () {
             this.run('stop');
+            return this;
         },
         mute : function (bool) {
             this.run('mute', [bool]);
+            return this;
         },
         volume : function (val) {
             this.run('volume', [val]);
+            return this;
         },
         loop : function (bool) {
             this.run('loop', [bool]);
+            return this;
         }
     };
 
