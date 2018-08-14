@@ -1,5 +1,9 @@
 # Getting Started
 
+**Warning**: Still in Alpha. Do not use in production.
+
+If you just need some audio and don't need anything too complex, start at [Installation](#installation) and then read some of the [examples](#detailed-examples) to see if what you want to do is covered. If you want anything more complex than that, or if you have grand, complex ideas, you'll need to read the whole thing.
+
 ## Introduction
 
 This is an audio library designed for the [Twine 2](https://twinery.org/) story format [Harlowe (v2.1.0 or later)](https://twine2.neocities.org/). It is the successor [to howler-for-harlowe](https://github.com/ChapelR/howler-for-harlowe) which will likely not be seeing any further updates.
@@ -10,7 +14,7 @@ All you need to install this library is the code. There are two ways to get it: 
 
 **In Twine 2 (online or standalone)**, copy and paste the code in `harlowe-audio.min.js` into your [Story JavaScript area](https://twinery.org/wiki/twine2:adding_custom_javascript_and_css), and the code in `harlowe-audio.min.css` into your Story Stylesheet area.
 
-**In Tweego or Entwine/Grunt-Entwine**, include the files in your command-line options or in your source code directory as appropriate. Remember to watch your file order, and refer to your comiler's docs if you need help.
+**In Tweego or Entwine/Grunt-Entwine**, include the files in your command-line options or in your source code directory as appropriate. Remember to watch your file order, and refer to your compiler's docs if you need help.
 
 **In Twee2**, create a special passage with the `script` tag and place the JavaScript code in that passage, and do the same thing with the CSS and a `style` tag. Refer to its [docs](https://dan-q.github.io/twee2/documentation.html#twee2-syntax-special-passages) for more.
 
@@ -346,7 +350,7 @@ The master audio methods are used for controlling *all* sound in the game at onc
 
 - **the `A.mute(bool)` method**
 
-- Arguments: 
+- Arguments:  
     -`bool`: (boolen) if `true`, mutes all audio; if `false`, unmutes all audio.
 
 - Returns: none.
@@ -357,7 +361,7 @@ Controls the master mute and unmute state.
 
 - **the `A.volume(level)` method**
 
-- Arguments: 
+- Arguments:  
     -`level`: (number) a volume level between `0` and `1`.
 
 - Returns: none.
@@ -476,7 +480,7 @@ Stops all the sounds in the group.
 
 - **the `<group>.mute(bool)` method**
 
-- Arguments: 
+- Arguments:  
     -`bool`: (boolen) if `true`, mutes the tracks; if `false`, unmutes them.
 
 - Returns: the group (chainable).
@@ -487,7 +491,7 @@ Mutes or unmutes every track in the group.
 
 - **the `<group>.volume(level)` method**
 
-- Arguments: 
+- Arguments:  
     -`level`: (number) a volume level between `0` and `1`.
 
 - Returns: the group (chainable).
@@ -498,8 +502,8 @@ Adjusts all the volumes of all the tracks in the group.
 
 - **the `<group>.loop(bool)` method**
 
-- Arguments: 
-    -`bool`: (boolen) if `true`, sets all the tracks to loop; if `false`, stops them from looping.
+- Arguments:  
+    -`bool`: (boolean) if `true`, sets all the tracks to loop; if `false`, stops them from looping.
 
 - Returns: the group (chainable).
 
@@ -529,7 +533,7 @@ The above code would cause the `'bgmusic'` to shuffle its tracks, then play them
 
 ## Playlist Methods
 
-Like groups, playlists recieve a subset of track methods, along with a few methods of their own. Most of these methods are chainable.
+Like groups, playlists receive a subset of track methods, along with a few methods of their own. Most of these methods are chainable.
 
 ---
 
@@ -565,7 +569,7 @@ Stops the playlist.
 
 - **the `<playlist>.loop(bool)` method**
 
-- Arguments: 
+- Arguments:  
     - `bool`: (boolean) causes the playlist to repeat after it ends if `true`.
 
 - Returns: the playlist (chainable).
@@ -650,64 +654,173 @@ Some more detailed examples of common use-cases.
 
 ## Loading Audio Over the Network
 
+You can use urls that point to audio file (i.e. they end in an audio file extension like `.wav` or `.ogg`) to set up a track.  For example:
+
+```javascript
+A.newTrack('theme', 'http://www.kozco.com/tech/piano2.wav', 'http://www.kozco.com/tech/piano2.aif');
+```
+
 ## Loading Audio with Relative Paths
+
+You can load audio with a **relative path**. A relative path is one that is resolved from where your file is located. Here's an [explanation](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_URL#Absolute_URLs_vs_relative_URLs). Note that relative paths will only work with published HTML files--they won't work correctly from the Twine 2 application's test and play modes.
+
+```javascript
+A.newTrack('beep', 'audio/beep.mp3', 'audio/beep.ogg');
+A.newTrack('cool-song', 'audio/cool.mp3', 'audio/cool.ogg');
+A.newTrack('techno', 'audio/techno.mp3', 'audio/techno.ogg');
+```
+
+[More information on adding media to your Twine game.](https://twinery.org/wiki/twine2:add_an_image_movie_sound_effect_or_music)
 
 ## Playing a Sound Only if It isn't Already Playing
 
+If the user is jumping around in your story using the undo or redo features of Harlowe, or if they can get to a scene in multiple ways at different times, you may want to use some [`(if:)`s](https://twine2.neocities.org/#macro_if) or [`(unless:)`s](https://twine2.neocities.org/#macro_unless) along with the `<track>.isPlaying()` method to make sure the sound you want to play isn't already playing.
+
+```
+(unless: A.track('theme').isPlaying())[
+    <script>A.track('theme').loop(true).play();</script>
+]
+```
+
+Or
+
+```
+(if: not (A.track('theme').isPlaying()))[
+    <script>A.track('theme').loop(true).play();</script>
+]
+```
+
+In some cases, like a major theme switch, where you already had music playing, you may need to do a bit more work, and make sure to stop any sounds that were already playing before playing more tracks.
+
+```
+(unless: A.track('theme').isPlaying())[
+    <script>
+        A.stopAll();
+        A.track('theme').loop(true).play();
+    </script>
+]
+```
+
+If you've already set up all your music tracks in a group, you can potentially do something even better, preventing potentially stopping other tracks, like UI noises or ambiance:
+
+```javascript
+A.newTrack('theme', 'http://www.kozco.com/tech/piano2.wav');
+A.newTrack('beep', 'audio/beep.mp3', 'audio/beep.ogg');
+A.newTrack('cool-song', 'audio/cool.mp3', 'audio/cool.ogg');
+A.newTrack('techno', 'audio/techno.mp3', 'audio/techno.ogg');
+
+A.createGroup('bgmusic', 'theme', 'cool-song', 'techno');
+```
+
+Then:
+
+```
+(unless: A.track('theme').isPlaying())[
+    <script>
+        A.group('bgmusic').stop();
+        A.track('theme').loop(true).play();
+    </script>
+]
+```
+
 ## Looping Background Music
+
+The `<track>.loop()` method can be used to make music loop. If all you're after is a a backing track, this is all you need. Just place it in your JavaScript (after the library) or in a `<script>` in a `startup`-tagged passage element:
+
+```javascript
+A.newTrack('theme', 'url/to-you-track.mp3')
+A.track('theme').loop(true).playWhenPossible();
+```
+
+That's it; you're done.
 
 ## Fading Music in and Out
 
+A nice fade goes a long way.
+
+```javascript
+A.track('cool-song').loop(true).fadeIn(2);
+```
+
+This will fade `'cool-song'` in over two seconds and loop it.
+
+You can also fade music out:
+
+```javascript
+A.track('cool-song').fadeOut(6);
+```
+
+This will fade the song out over six seconds and stop it when the fade is over.
+
+To fade one song out and another one in:
+
+```
+{
+<script>A.track('cool-song').fadeOut(2);</script>
+(live: 2s)[
+    <script>A.track('theme').fadeIn(2);</script>
+]
+}
+```
+
+The above passage code will cause the `'cool-song'` track to fade out over two seconds, and the `'theme'` track to fade in over two seconds immediately afterward.
+
+You can also use the *top-secret* `<track>.delay()` method if you're comfortable with JavaScript:
+
+```javascript
+A.track('cool-song').fadeOut(2);
+A.track('theme').delay(2000, function () { this.fadeIn(2) });
+```
+
 ## Playing a Random Sound
+
+You can play a random sound from a predefined list by making a playlist:
+
+```javascript
+A.newTrack('beep', 'audio/beep.mp3', 'audio/beep.ogg');
+A.newTrack('click', 'audio/click.mp3', 'audio/click.ogg');
+A.newTrack('scream', 'audio/scream.mp3', 'audio/scream.ogg');
+
+A.createPlaylist('noises', 'beep', 'click', 'scream');
+```
+
+Then:
+
+```
+{
+(link-repeat: 'Play a noise')[
+    <script>A.playlist('noises').random().play();</script>
+]
+}
+```
+
+The `<playlist>.random()` method returns one random track from the playlist, and you can then use any [track methods](#track-methods) on it.
 
 ## Playing Sounds when Links are Clicked
 
+Placing a `<script>` element with the method you need inside a `(link:)` (or similar) macro will allow you to play sounds on click.
+
+```
+[[Boring Link|some passage]]
+
+{
+(link: 'Exciting Link')[
+    <script>A.track('beep').play();</script>
+    (goto: 'some passage')
+]
+}
+```
+
 ## Adjusting the Volume of a Sound
 
-## Stopping All Playing Sounds
+Tracks can have individual volumes to help you balance out sounds, or make some faint.
 
-## Incidental Sound Effects
-
-## Stopping One Sound and Playing Another
-
-# API Reference
-
-This part of the docs is intended for those more comfortable with JavaScript code. You don't really need to read it to use the library on a basic(ish) level, so don't worry if it's a bit over your head.
-
-## Audio Methods and Properties
-
-The `window.A` object is actually a reference to the `window.Chapel.Audio` object. This object contains the entire library, and has many methods and properties.
-
-...coming soon
-
+```javascript
+A.track('beep').volume(0.5);
 ```
-## Audio.group()
 
-## Audio.track()
+Volume levels are numbers between 0 and 1 (inclusive), so 0.5 is half volume. By default tracks have a volume of 1.
 
-## Audio.playlist()
+## Have ideas?
 
-## Audio.classes
-
-## Track Methods
-
-### Static
-
-### Instance
-
-## Playlist Methods
-
-### Static
-
-### Instance
-
-## Group Methods
-
-### Static
-
-### Instance
-
-## Audio Events
-
-## Audio.controls
-```
+[Open an issue](https://github.com/ChapelR/harlowe-audio/issues/new) to suggest more examples, or for clarification on existing ones.
