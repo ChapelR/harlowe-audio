@@ -1,3 +1,5 @@
 :: Start
-<script>A.newTrack('piano', 'http://www.kozco.com/tech/piano2.wav');</script>
-(link: 'play')[ (set: _dummy to A.track('piano').loop(true).fadeIn(3).delay(2000, function () { this.fadeOut(3); })) ]
+<script>
+    A.newTrack('piano', 'http://www.kozco.com/tech/piano2.wav');
+    A.track('piano').loop(true).playWhenPossible();
+</script>

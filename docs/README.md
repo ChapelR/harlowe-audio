@@ -10,7 +10,7 @@ This is an audio library designed for the [Twine 2](https://twinery.org/) story 
 
 ## Installation
 
-All you need to install this library is the code. There are two ways to get it: [copy and pasting from GitHub](https://github.com/ChapelR/harlowe-audio/tree/master/dist), or [via a Google Drive download](#drivelink). If you download the code, be sure to open it and mess with it in a text editor, *not* a word processor. Once you've got the code, you'll need to put in in your project.
+All you need to install this library is the code. There are two ways to get it: [copy and pasting from GitHub](https://github.com/ChapelR/harlowe-audio/tree/master/dist), or [via a Google Drive download](#drivelink) (coming soon). If you download the code, be sure to open it and mess with it in a text editor, *not* a word processor. Once you've got the code, you'll need to put in in your project.
 
 **In Twine 2 (online or standalone)**, copy and paste the code in `harlowe-audio.min.js` into your [Story JavaScript area](https://twinery.org/wiki/twine2:adding_custom_javascript_and_css), and the code in `harlowe-audio.min.css` into your Story Stylesheet area.
 
@@ -29,6 +29,7 @@ If you take a look at the code of `howler-audio.min.js`, you'll see the `options
 ```javascript
 var options = {
     preload : true,
+    loadDelay : 0,
     muteOnBlur : true,
     startingVol : 0.5,
     storagekey : '%%tw-audio',
@@ -47,6 +48,14 @@ var options = {
 Set this option to `true` or `false`.
 
 Controls whether audio should be preloaded when the game is started, or if audio should only be loaded as needed. In most cases, you'll want to preload it.
+
+---
+
+- **the `loadDelay` option**
+
+Set this option to a number representing an amount of milliseconds. 
+
+Causes the loading screen to hang for a configurable number of milliseconds after loading completes. Use this to fine tune for edge cases, or work around [FOUC issues](https://en.wikipedia.org/wiki/Flash_of_unstyled_content).
 
 ---
 
@@ -164,23 +173,13 @@ Attempts to start playback of the named track.
 
 ---
 
-- **the `<track>.forcePlay()` method**
-
-- Arguments: none.
-
-- Returns: the track (chainable).
-
-Attempts to start playback of the named track without user interaction. Does not work in some browsers, and not a great way to start playback, for the most part.
-
----
-
 - **the `<track>.playWhenPossible()` method**
 
 - Arguments: none.
 
 - Returns: the track (chainable).
 
-Attempts to start playback of the named track as soon as a user interaction occurs. This track will piggyback off of any click to start the sound. This is better than `forcePlay()` for most things.
+Attempts to start playback of the named track as soon as a user interaction occurs. This track will piggyback off of any click to start the sound, and will "unlock" audio autoplay for the rest of your game.
 
 ---
 
@@ -648,9 +647,13 @@ Makes the panel visible after hiding it.
 
 ---
 
+## Load Screen
+
+This library adds a loading screen to Harlowe that is superficially similar to SugarCube's. You can use this load screen for other things too, if you want. Show it by calling `A.loadScreen.show()`, and get rid of it with `A.loadScreen.dismiss()`. That's all there really is to it.
+
 # Detailed Examples
 
-Some more detailed examples of common use-cases.
+Some more detailed examples and explanations of common use-cases.
 
 ## Loading Audio Over the Network
 
@@ -671,6 +674,47 @@ A.newTrack('techno', 'audio/techno.mp3', 'audio/techno.ogg');
 ```
 
 [More information on adding media to your Twine game.](https://twinery.org/wiki/twine2:add_an_image_movie_sound_effect_or_music)
+
+## Preloading Sound
+
+By default, [the `preload` configuration option](#configuration) is `true`, and your game will attempt to preload all the audio it needs before starting up. It won't load every bit of data, but it will make sure every track can at least be played. The very first time a user accesses your game, this data may take quite a while to download, and they'll be staring at a CSS spinner the whole time.
+
+You can speed up this issue by shutting off preloading, but the risk there is that sounds won't be ready. That nice crisp beep when you click? Half a second late. The awesome theme tune timed to a slick CSS animation? Not so slick now.
+
+Regardless, on subsequent plays, a given user shouldn't have either problem, as the data should be cached.
+
+As an alternative to the `preload` config, you can also call `A.preload()` in your scripts.
+
+## Autoplaying Sound
+
+**Autoplaying** refers to playing a sound (or video) *before* the user interacts with a page. Autoplaying is widely considered annoying, especially on mobiles. However, you've made a game--most users will expect autoplaying sound! It doesn't matter to most browser manufacturers.
+
+There's no way to fake out autoplay, but once your document has permission to play a single sound, autoplay will work from then on out.
+
+For example, if the following is how you play your first bit of audio, it won't work in some browsers:
+
+```
+<script>A.track('theme').play();</script>
+```
+
+You have two options. The first is to simply tie the first sound you play to a `(link:)` of some kind. You may want to add a splash screen to your story to do this:
+
+```
+#My Awesome Game
+
+(link: 'Start')[
+    <script>A.track('theme').play();</script>
+    (goto: 'real first passage')
+]
+```
+
+The second is to use the `playWhenPossible()` method, which will listen for valid user interactions, and then piggyback off of them to play a sound.
+
+```
+<script>A.track('theme').playWhenPossible();</script>
+```
+
+Once it detects a user interaction, control over sound will be unlocked for your game.
 
 ## Playing a Sound Only if It isn't Already Playing
 

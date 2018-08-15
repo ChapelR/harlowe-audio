@@ -302,7 +302,7 @@
                     }
                 });
             }, function (err) {
-                $(document).one('click', function () {
+                $(document).one('click mousedown keydown touchstart', function () {
                     self.play();
                 });
             }).catch( function (err) {
@@ -699,10 +699,6 @@
     window.Chapel = window.Chapel || {};
 
     window.Chapel.Audio = Audio;
-
-    if (window.A === undefined) {
-        window.A = Audio;
-    }
 
     if (options.persistPrefs) {
         Audio.loadPrefs();

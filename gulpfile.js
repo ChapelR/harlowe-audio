@@ -28,7 +28,7 @@ function processStyles (dir, out, name) {
 
 // linting 
 function lint () {
-    return gulp.src(config.directories['user-js'])
+    return gulp.src('./src')
         .pipe(jshint())
         .pipe(jshint.reporter('default', { beep : true }));
 }
