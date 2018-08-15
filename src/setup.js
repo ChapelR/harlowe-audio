@@ -1,12 +1,12 @@
 (function () {
     'use strict';
 
-    if (window.A === undefined) {
+    if (options.globalA && window.A === undefined) {
         window.A = window.Chapel.Audio;
     }
 
     $(document).on('unload', function () {
-        A.savePrefs();
+        window.Chapel.Audio.savePrefs();
     });
 
 }());

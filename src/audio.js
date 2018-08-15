@@ -42,6 +42,8 @@
 
     var Audio = {
         // no API
+        loaded : [],
+        // no API
         classes : {},
         // no API
         master : {
@@ -190,6 +192,8 @@
             'data-track' : 'id',
             'data-volume' : 1,
             'data-mute' : false
+        }).one('canplay', function () {
+            Audio.loaded.push(id);
         });
 
         if (options.preload) {
@@ -598,8 +602,9 @@
         this.tracks = trackIDs.map( function (id) {
             return Track.get(id);
         });
-        this.loop = false;
+        this.looping = false;
         this.current = '';
+        this.playing = false;
     }
 
     Playlist.list = {};
@@ -636,54 +641,66 @@
         random : function () {
             return this.tracks[Math.floor(Math.random() * this.tracks.length)];
         },
-        play : function (force) {
-            var i = i || (function () {
-                if (this.current) {
-                    return this.tracks.findIndex( function (tr) {
-                        return tr.id === this.current;
+        isPlaying : function () {
+            return this.playing;
+        },
+        play : function (i) {
+            var self = this;
+            i = i || (function () {
+                if (self.current) {
+                    return self.tracks.findIndex( function (tr) {
+                        return tr.id === self.current;
                     });
                 } else {
                     return 0;
                 }
             }());
 
-            if (i >= this.tracks.length && this.loop) {
+            if (i >= self.tracks.length && self.looping) {
                 i = 0;
-            } else {
-                this.current = '';
+            } else if (i >= self.tracks.length) {
+                self.current = '';
+                self.playing = false;
                 return;
             }
 
-            var self = this;
-            var track = this.tracks[i];
+            var track = self.tracks[i];
+            console.log(track.id, track);
             var cached = track.isLooping();
             track.loop(false);
-            if (force) {
-                track.forcePlay();
-            } else {
-                track.play();
-            }
-            this.current = track.id;
 
-            track.on('ended.playlist', function () {
+            track.play();
+            self.playing = true;
+            setTimeout( function () {
+                if (!track.isPlaying()) {
+                    self.playing = false;
+                }
+            }, 20);
+            self.current = track.id;
+
+            track.$el.one('ended.playlist', function () {
                 i++;
                 track.loop(cached);
-                self.play();
+                self.play(i);
             });
 
-            return this;
+            return self;
         },
         loop : function (bool) {
-            this.loop = !!bool;
+            this.looping = !!bool;
             return this;
         },
         stop : function () {
-            this.current.stop().off('ended.playlist');
+            var track = Track.get(this.current);
+            track.stop();
+            track.$el.off('.playlist');
             this.current = '';
+            this.playing = false;
             return this;
         },
         pause : function () {
-            this.current.pause();
+            Track.get(this.current).pause();
+            this.playing = false;
             return this;
         }
     };

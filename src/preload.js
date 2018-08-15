@@ -3,6 +3,7 @@
 
     var $overlay = $((document).createElement('div'))
         .attr('id', 'audio-overlay')
+        .css('display', 'none')
         .appendTo(document.body);
 
     function loaderShow () {
@@ -17,40 +18,46 @@
         });
     }
 
-    function loadSources () {
+    function loadSources () { // figure this out
         $(document).ready( function () {
             // DOM is loaded, display the overlay
             loaderShow();
         });
+
         var delay = 100 + options.loadDelay;
-        setTimeout(function () {
-            var trackList = Chapel.Audio.classes.Track.list;
-            if (trackList && Array.isArray(trackList) && trackList.length) {
-                var sounds = Chapel.Audio.classes.Track.list.map( function (el) {
-                    return el.$el;
-                });
-                var track;
+        var trackList = Chapel.Audio.classes.Track.list;
+        var loaded = Chapel.Audio.loaded;
 
-                var loadTrack = function () {
-                    if (!sounds.length) {
-                        loaderDismiss();
-                        return;
-                    }
-                    track = sounds.shift();
-                    track.attr('preload', 'auto');
-                    track.one('canplay.loadTrack', function () {
-                        $(this).off('.loadTrack');
-                        loadTrack();
-                    });
-                };
+        if (!trackList.length) {
+            setTimeout(loaderDismiss, delay);
+            return;
+        }
+        var ids = trackList.map( function (tr) {
+            return tr.id;
+        });
 
-                loadTrack();
+        function _load () {
+
+            if (!ids.length) {
+                setTimeout(loaderDismiss, delay);
+                return;
             }
-        }, delay);
-    }
-    
-    if (options.preload) {
-        loadSources();
+
+            var id = ids.shift();
+
+            if (loaded.includes(id)) {
+                // already done
+                _load();
+            } else {
+                Chapel.Audio.classes.Track.get(id).$el
+                    .off('canplay')
+                    .one('canplay', function () {
+                        _load();
+                    });
+            }
+        }
+
+        _load();
     }
 
     // export to Chapel namespace

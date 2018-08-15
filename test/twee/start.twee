@@ -1,5 +1,18 @@
-:: Start
+:: audio-init [startup]
 <script>
     A.newTrack('piano', 'http://www.kozco.com/tech/piano2.wav');
-    A.track('piano').loop(true).playWhenPossible();
+    A.newTrack('noise', 'https://www.sample-videos.com/audio/mp3/crowd-cheering.mp3');
+    A.createPlaylist('bgm', 'piano', 'noise');
+    A.preload();
 </script>
+
+:: Start
+<script>A.track('piano').playWhenPossible();</script>
+(link: 'Play')[
+    <script>A.playlist('bgm').loop(true).play();</script>
+]
+
+[[next]]
+
+:: next
+

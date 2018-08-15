@@ -8,6 +8,22 @@ If you just need some audio and don't need anything too complex, start at [Insta
 
 This is an audio library designed for the [Twine 2](https://twinery.org/) story format [Harlowe (v2.1.0 or later)](https://twine2.neocities.org/). It is the successor [to howler-for-harlowe](https://github.com/ChapelR/howler-for-harlowe) which will likely not be seeing any further updates.
 
+**Why Not Keep Working on Howler-for-Harlowe?**
+
+I wanted to, but there were a few things about HowlerJS that made it clash with Harlowe--this typically reared its head as the unfixable history system bug, where Howler just did not give a crap about Harlowe's history system, and they tripped over each other. On top of that, there were a number of features in Howler that I just don't imagine most Twine authors need, and we can put those KB to better use. Overall, this library 9KB, less functional, but more streamlined.
+
+Howler-for-Harlowe will continue to exist, but I don't intend to fix it other than major bugs or security issues.
+
+**What Else Should I Know?**
+
+This library uses the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_Web_Audio_API) and [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises). That means Internet Explorer is out (I'm not sure if Harlowe actually supports IE). Other than that, all major modern browsers should work fine, though the volume control may look odd in certain browsers.
+
+This library is free and dedicated to the public domain. That means you don't need to provide credit or attribution if you don't want to, and you can do anything you like with the code. [Review the license](https://github.com/ChapelR/harlowe-audio/blob/master/LICENSE) for any questions or concerns about that.
+
+**I'm Having Trouble**
+
+The best place to ask for help if the issue is on your end is [the Twine Q&A](https://twinery.org/questions/), [the Subreddit](https://www.reddit.com/r/twinegames/), or [the Discord server](https://discordapp.com/invite/n5dJvPp). If you suspect that the problem is in the code or otherwise on my end, [open an issue](https://github.com/ChapelR/harlowe-audio/issues/new).
+
 ## Installation
 
 All you need to install this library is the code. There are two ways to get it: [copy and pasting from GitHub](https://github.com/ChapelR/harlowe-audio/tree/master/dist), or [via a Google Drive download](#drivelink) (coming soon). If you download the code, be sure to open it and mess with it in a text editor, *not* a word processor. Once you've got the code, you'll need to put in in your project.
@@ -34,6 +50,7 @@ var options = {
     startingVol : 0.5,
     storagekey : '%%tw-audio',
     persistPrefs : true,
+    globalA : true,
     controls : {
         show : true,
         startClosed : true
@@ -47,7 +64,7 @@ var options = {
 
 Set this option to `true` or `false`.
 
-Controls whether audio should be preloaded when the game is started, or if audio should only be loaded as needed. In most cases, you'll want to preload it.
+Controls whether audio should be preloaded when the game is started, or if audio should only be loaded as needed. In most cases, you'll want to preload it. You can optionally include a loading screen by placing the `A.preload()` method beneath your track definitions.
 
 ---
 
@@ -88,6 +105,14 @@ This library saves some data to local storage. You can use this option to change
 Set this option to `true` or `false`.
 
 The master volume and mute are considered user preferences, in that they are intended for users to adjust. You can use this option to cause changes to these settings to be saved and restored from local storage (using the above key). For example, if the user sets the master volume to `0.3`, then closes the game, the master volume will be `0.3` rather than the `startingVol` next time they play the game.
+
+---
+
+- **the `globalA` option**
+
+Set this option to `true` or `false`.
+
+By default, and throughout this guide, the API is sent to the global scope as `A`, matching howler-for-harlowe's way of doing things. If you don't want to have that, or if the `window.A` name is already taken, you can find everything at `Chapel.Audio` instead.
 
 ---
 
@@ -143,6 +168,17 @@ A.newTrack('theme', ['audio/theme.mp3', 'audio/theme.ogg']);
 ```
 
 Either way works fine.
+
+If you're loading a lot of audio, consider including the `A.preload()` method below it, to show a loading screen while that's happening.
+
+```
+:: audio-init [startup]
+<script>
+A.newTrack('theme', 'audio/theme.mp3');
+A.newTrack('beep', 'audio/beep.mp3');
+A.preload(); // shows a load screen and dismisses it when the audio has loaded
+</script>
+```
 
 Once you have some tracks set up and named, you're ready to do things with them!
 
@@ -419,7 +455,19 @@ Clears any user preferences that are saved in local storage.
 
 ---
 
+- **the `A.preload()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Shows a loading screen while all previously defined tracks are cached by the browser. Can be used to completely or selectively preload audio before the game starts.
+
+---
+
 ## Groups
+
+**Note**: Currently bugged. Do not use.
 
 Groups are ways to collect and organize tracks, but should *not* be confused with playlists (read on for those). These are designed to allow you to select and control a large number of tracks and do something to them. The methods used by groups are very similar to some of the track methods, but as said, generally do something to all of them at once.
 
@@ -536,13 +584,14 @@ Like groups, playlists receive a subset of track methods, along with a few metho
 
 ---
 
-- **the `<playlist>.play()` method**
+- **the `<playlist>.play(start)` method**
 
-- Arguments: none.
+- Arguments:  
+    - `start`: (number) the track to start at, starting from 0
 
 - Returns: the playlist (chainable).
 
-Plays the playlist. Every track will be played in order, one after another.
+Plays the playlist. Every track will be played in order, one after another. You can start at any one of the tracks by providing a number starting at 0, which will be the first track.
 
 ---
 
@@ -594,6 +643,16 @@ Returns a random track from the playlist--you can then use [track methods](#trac
 - Returns: the playlist (chainable).
 
 Shuffles (randomizes) the playlist. Be warned: the default order cannot be restored without creating a new playlist.
+
+---
+
+- **the `<playlist>.isPlaying()` method**
+
+- Arguments: none.
+
+- Returns: boolean.
+
+Returns true if the playlist is currently being played in some fashion.
 
 ---
 
@@ -649,7 +708,7 @@ Makes the panel visible after hiding it.
 
 ## Load Screen
 
-This library adds a loading screen to Harlowe that is superficially similar to SugarCube's. You can use this load screen for other things too, if you want. Show it by calling `A.loadScreen.show()`, and get rid of it with `A.loadScreen.dismiss()`. That's all there really is to it.
+This library adds a loading screen to Harlowe that is superficially similar to SugarCube's. You can use this load screen by calling the `A.preload()` method after defining some tracks. You can potentially use it for other things too, if you want. Show it by calling `A.loadScreen.show()`, and get rid of it with `A.loadScreen.dismiss()`. That's really all there is to it.
 
 # Detailed Examples
 
@@ -677,13 +736,11 @@ A.newTrack('techno', 'audio/techno.mp3', 'audio/techno.ogg');
 
 ## Preloading Sound
 
-By default, [the `preload` configuration option](#configuration) is `true`, and your game will attempt to preload all the audio it needs before starting up. It won't load every bit of data, but it will make sure every track can at least be played. The very first time a user accesses your game, this data may take quite a while to download, and they'll be staring at a CSS spinner the whole time.
+By default, [the `preload` configuration option](#configuration) is `true`, and your game will attempt to preload all the audio it needs. This will make the game feel unresponsive and strange until loading completes You can show a loading screen during this time by using the `A.preload()` method, which may be preferable to an unresponsive page.
 
-You can speed up this issue by shutting off preloading, but the risk there is that sounds won't be ready. That nice crisp beep when you click? Half a second late. The awesome theme tune timed to a slick CSS animation? Not so slick now.
+You can speed up initial loading and skip that sloppiness altogether by shutting off preloading, but the risk there is that sounds won't be ready when they're called the first time. That nice crisp beep when you click? Half a second late. The awesome theme tune timed to a slick CSS animation? Not so slick now.
 
-Regardless, on subsequent plays, a given user shouldn't have either problem, as the data should be cached.
-
-As an alternative to the `preload` config, you can also call `A.preload()` in your scripts.
+Regardless, on subsequent plays, a given user shouldn't have either problem, as the data should be cached in their browser.
 
 ## Autoplaying Sound
 

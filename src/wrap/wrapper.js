@@ -12,6 +12,7 @@
         startingVol : 0.5,
         storagekey : '%%tw-audio',
         persistPrefs : true,
+        globalA : true,
         controls : {
             show : true,
             startClosed : true
