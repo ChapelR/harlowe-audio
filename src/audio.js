@@ -339,11 +339,10 @@
         },
         mute : function (bool) {
             bool = !!bool;
-            if (Audio.master.mute !== bool) {
-                this.$el.attr('data-mute', bool);
-                this.unwrap.muted = !!Audio.master.mute;
+            this.$el.attr('data-mute', bool);
+            if (Audio.master.mute) {
+                this.unwrap.muted = true;
             } else {
-                this.$el.attr('data-mute', bool);
                 this.unwrap.muted = bool;
             }
             Track.emit(':mute', this);
@@ -382,8 +381,13 @@
             return Number(this.$el.attr('data-volume'));
         },
         addToGroup : function (group, custom) {
+            var self = this;
             var gr = custom ? Audio.groups.custom[group] : Audio.groups[group];
-            gr.push(this);
+            if (!gr.some( function (tr) {
+                return self.id === tr.id;
+            })) {
+                gr.push(this);
+            }
             return this;
         },
         removeFromGroup : function (group, custom) {
@@ -535,9 +539,9 @@
             return new Audio.group(name);
         }
         if (Object.keys(Audio.groups.custom).includes(name)) {
-            Object.assign(this, Audio.groups.custom[name]);
+            this.members = Audio.groups.custom[name];
         } else {
-            Object.assign(this, Audio.groups[name] || null);
+            this.members = Audio.groups[name];
         }
     };
 
@@ -546,14 +550,9 @@
     };
 
     Audio.group.runOnAll = function (group, method, args) {
-        if (Audio.group.is(group)) {
-            group.forEach( function (track) {
-                if (Track.is(track)) {
-                    track[method].call(track, 
-                        (args && Array.isArray(args)) ? args : []);
-                }
-            });
-        }
+        group.members.forEach( function (track) {
+            track[method].apply(track, (args && Array.isArray(args)) ? args : []);
+        });
     };
 
     // Audio.group('playing').pause(); or Audio.group('playing').mute(true);

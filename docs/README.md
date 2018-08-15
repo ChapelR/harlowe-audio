@@ -467,8 +467,6 @@ Shows a loading screen while all previously defined tracks are cached by the bro
 
 ## Groups
 
-**Note**: Currently bugged. Do not use.
-
 Groups are ways to collect and organize tracks, but should *not* be confused with playlists (read on for those). These are designed to allow you to select and control a large number of tracks and do something to them. The methods used by groups are very similar to some of the track methods, but as said, generally do something to all of them at once.
 
 There are two built-in groups, `'playing'` and `'looping'`, that can be used to control all currently playing and looping tracks. Additionally, you can define your own groups with `A.createGroup()`:

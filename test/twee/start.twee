@@ -7,8 +7,8 @@
 </script>
 
 :: Start
-<script>A.track('piano').playWhenPossible();</script>
-(link: 'Play')[
+<script>A.track('piano').loop(true).playWhenPossible();</script>
+(link: 'Playlist')[
     <script>A.playlist('bgm').loop(true).play();</script>
 ]
 
