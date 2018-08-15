@@ -13,6 +13,7 @@
         storagekey : '%%tw-audio',
         persistPrefs : true,
         globalA : true,
+        includeFixes : false,
         controls : {
             show : true,
             startClosed : true

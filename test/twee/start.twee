@@ -7,12 +7,14 @@
 </script>
 
 :: Start
+(if: A.track('piano').isPlaying())[yes](else:)[no]
+(print: A.track('piano').isPlaying())
 <script>A.track('piano').loop(true).playWhenPossible();</script>
-(link: 'Playlist')[
-    <script>A.playlist('bgm').loop(true).play();</script>
-]
+(if: not A.track('piano').isPlaying())[no](else:)[yes]
+
 
 [[next]]
 
 :: next
-
+# Hello
+(unless: A.track('piano').isPlaying())[no](else:)[yes]

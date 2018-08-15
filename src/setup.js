@@ -9,4 +9,6 @@
         window.Chapel.Audio.savePrefs();
     });
 
+    Chapel.Audio.classes.Track.renew();
+
 }());

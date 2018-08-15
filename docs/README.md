@@ -1,6 +1,6 @@
 # Getting Started
 
-**Warning**: Still in Alpha. Do not use in production.
+**Warning**: Currently in Beta; may contain bugs!
 
 If you just need some audio and don't need anything too complex, start at [Installation](#installation) and then read some of the [examples](#detailed-examples) to see if what you want to do is covered. If you want anything more complex than that, or if you have grand, complex ideas, you'll need to read the whole thing.
 
@@ -26,7 +26,7 @@ The best place to ask for help if the issue is on your end is [the Twine Q&A](ht
 
 ## Installation
 
-All you need to install this library is the code. There are two ways to get it: [copy and pasting from GitHub](https://github.com/ChapelR/harlowe-audio/tree/master/dist), or [via a Google Drive download](#drivelink) (coming soon). If you download the code, be sure to open it and mess with it in a text editor, *not* a word processor. Once you've got the code, you'll need to put in in your project.
+All you need to install this library is the code. There are two ways to get it: [copy and pasting from GitHub](https://github.com/ChapelR/harlowe-audio/tree/master/dist), or [via a Google Drive download](https://drive.google.com/file/d/1ThjHsBDzAwYNLc0p8g_V1fC-dLhBc8EH/view?usp=sharing). If you download the code, be sure to open it and mess with it in a text editor, *not* a word processor. Once you've got the code, you'll need to put in in your project.
 
 **In Twine 2 (online or standalone)**, copy and paste the code in `harlowe-audio.min.js` into your [Story JavaScript area](https://twinery.org/wiki/twine2:adding_custom_javascript_and_css), and the code in `harlowe-audio.min.css` into your Story Stylesheet area.
 
@@ -40,7 +40,7 @@ The following sections will describe what exactly you can do with this library a
 
 ## Configuration
 
-If you take a look at the code of `howler-audio.min.js`, you'll see the `options` object near the top of the script, which you can use to configure the library to meet your needs. It looks like this:
+If you take a look at the code of `harlowe-audio.min.js`, you'll see the `options` object near the top of the script, which you can use to configure the library to meet your needs. It looks like this:
 
 ```javascript
 var options = {
@@ -51,6 +51,7 @@ var options = {
     storagekey : '%%tw-audio',
     persistPrefs : true,
     globalA : true,
+    includeFixes : true,
     controls : {
         show : true,
         startClosed : true
@@ -113,6 +114,14 @@ The master volume and mute are considered user preferences, in that they are int
 Set this option to `true` or `false`.
 
 By default, and throughout this guide, the API is sent to the global scope as `A`, matching howler-for-harlowe's way of doing things. If you don't want to have that, or if the `window.A` name is already taken, you can find everything at `Chapel.Audio` instead.
+
+---
+
+- **the `includeFixes` option**
+
+Set this option to `true` or `false`.
+
+Experimental feature. I'm going to try to clean up a few issues in Harlowe that I find, mostly boring things you'll never notice. Doesn't really belong in an audio library, no if I build a significant amount I may spin this into it's own this. For now the code doesn't really add too much weight.
 
 ---
 
@@ -923,3 +932,54 @@ Volume levels are numbers between 0 and 1 (inclusive), so 0.5 is half volume. By
 ## Have ideas?
 
 [Open an issue](https://github.com/ChapelR/harlowe-audio/issues/new) to suggest more examples, or for clarification on existing ones.
+
+# Pitfalls
+
+There are a few things to know and avoid when using JavaScript in Harlowe.
+
+## `<script>` elements are processed (very) late.
+
+ `<script>` elements are *not* processed in the order they are encountered, but rather they are always processed last--after all passage code. Even when they're in `startup`- or `header`-tagged passages, they will be processed after **all** macro code. This can create weird issues. Consider the following:
+
+```
+:: audio-init [startup]
+<script>
+    A.newTrack('piano', 'http://www.kozco.com/tech/piano2.wav');
+    A.preload();
+</script>
+
+:: Start
+(print: A.track('piano').isPlaying())
+<script>A.track('piano').loop(true).playWhenPossible();</script>
+```
+You would probably expect the `(print:)` there to print `false`; instead, it will throw an error (`cannot read property isPlaying of undefined`) because our script is processed late.
+
+You can abuse the set macro, however to run code in order:
+
+```
+:: audio-init [startup]
+(set: _dummy to A.newTrack('piano', 'http://www.kozco.com/tech/piano2.wav'))
+(set: _dummy to A.preload())
+
+:: Start
+(print: A.track('piano').isPlaying())
+<script>A.track('piano').loop(true).playWhenPossible();</script>
+```
+
+The `(set:)` will force the function to be evaluated in order, and the `(print:)` will print `false` as expected. However, this is a hack, and may not be possible in future versions of Harlowe.
+
+I generally recommend using `<script>` elements where ever possible, and only resorting to this trick when there's no other easy way to achieve the desired results.
+
+## Use caution when altering tracks in multiple ways.
+
+When you do something to the same track(s) with its playlist, its group, or its track methods at one time, you're asking for trouble. Even though tracks can be part of groups and playlists, I opted **not** to clone the tracks; there is only ever one track, and this means **all changes to the track are essentially "global"** and will effect the track regardless of how you interact with it.
+
+This may not always be the case, but this seemed like it gave tracks a much more consistent and expected behavior. Adding cloned version of tracks for at least playlists is on the table, though, so let me know [via an issue](https://github.com/ChapelR/harlowe-audio/issues/new) if you feel that makes more sense.
+
+## Prefer track methods when possible.
+
+Collections are always slower, and this is true with tracks, too. Whenever it would make sense to use more than one kind of method, always prefer track methods, as they are *much* faster.
+
+## Master controls are user controls.
+
+Note that the state of the master controls (mute and volume) are intended for your players to adjust, not for the developer. You *can* use them, but they're generally a poor way to achieve most results. For this reason, I would suggest always using group methods to adjust volume or mute state for a group of tracks (or even all tracks, if it comes to that) rather than the master controls. Remember that tracks can be members of multiple groups. This is why the group interface exists in the first place.

@@ -212,7 +212,7 @@
     Track.list = [];
 
     Track.is = function (inst) {
-        return (this instanceof Track);
+        return (inst instanceof Track);
     };
 
     Track.has = function (id) {

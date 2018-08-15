@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var _state = State;
+
     var $overlay = $((document).createElement('div'))
         .attr('id', 'audio-overlay')
         .css('display', 'none')
@@ -18,7 +20,11 @@
         });
     }
 
-    function loadSources () { // figure this out
+    function loadSources () { 
+        if (_state.pastLength || _state.futureLength) {
+            // do not re-preload
+            return;
+        }
         $(document).ready( function () {
             // DOM is loaded, display the overlay
             loaderShow();
@@ -65,7 +71,10 @@
     window.Chapel.Audio = window.Chapel.Audio || {};
     window.Chapel.Audio.loadScreen = {
         show : loaderShow,
-        dismiss : loaderDismiss
+        dismiss : loaderDismiss,
+        kill : function () {
+            $('#audio-overlay').remove();
+        }
     };
     window.Chapel.Audio.$overlay = $overlay;
     window.Chapel.Audio.preload = loadSources;
