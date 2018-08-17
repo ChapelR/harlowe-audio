@@ -1,6 +1,6 @@
 ;(function () {
     /**
-     * Harlowe Audio Library, by Chapel, v0.1.0pre
+     * Harlowe Audio Library, by Chapel, v1.0.0
      *
      * Released under the Unlicense, and dedicated to the public domain.
     **/

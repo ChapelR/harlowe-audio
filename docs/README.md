@@ -121,7 +121,7 @@ By default, and throughout this guide, the API is sent to the global scope as `A
 
 Set this option to `true` or `false`.
 
-Experimental feature. I'm going to try to clean up a few issues in Harlowe that I find, mostly boring things you'll never notice. Doesn't really belong in an audio library, no if I build a significant amount I may spin this into it's own this. For now the code doesn't really add too much weight.
+Experimental feature. I'm going to try to clean up a few issues in Harlowe that I find, mostly boring things you'll never notice. Doesn't really belong in an audio library, so if I build a significant amount I will spin this into it's own thing. For now the code doesn't really add too much weight.
 
 ---
 
@@ -591,14 +591,14 @@ Like groups, playlists receive a subset of track methods, along with a few metho
 
 ---
 
-- **the `<playlist>.play(start)` method**
+- **the `<playlist>.play([start])` method**
 
 - Arguments:  
-    - `start`: (number) the track to start at, starting from 0
+    - `start`: (optional) (number) the track to start at, list is 0-based
 
 - Returns: the playlist (chainable).
 
-Plays the playlist. Every track will be played in order, one after another. You can start at any one of the tracks by providing a number starting at 0, which will be the first track.
+Plays the playlist. Every track will be played in order, one after another. You can optionally start at any one of the tracks by providing a number (0 will be the first track).
 
 ---
 
@@ -983,3 +983,117 @@ Collections are always slower, and this is true with tracks, too. Whenever it wo
 ## Master controls are user controls.
 
 Note that the state of the master controls (mute and volume) are intended for your players to adjust, not for the developer. You *can* use them, but they're generally a poor way to achieve most results. For this reason, I would suggest always using group methods to adjust volume or mute state for a group of tracks (or even all tracks, if it comes to that) rather than the master controls. Remember that tracks can be members of multiple groups. This is why the group interface exists in the first place.
+
+# Extensions
+
+You can build or import JavaScript-based extensions into this library using special funcitons designed to add features without clobbering existing stuff. For example, if you wanted to make a method for tracks that returned their names, you could use the `A.extendTrackProto()` method, and pass it an object containing the new method. For example:
+
+```javascript
+A.extendTrackProto({
+    getName : function () {
+        return this.id;
+    }
+});
+```
+
+Then you can use it just like any other track method:
+
+```javascript
+var trackName = A.playlist('bgm').random().getName();
+```
+
+You can add multiple properties at once, but if a property name that is already taken is encountered, an error will be thrown.
+
+```javascript
+A.extendTrackProto({
+    getName : function () {
+        return this.id;
+    },
+    loop : true // error!
+});
+```
+
+These functions are probably most useful for people already experienced with JavaScript, but will allow me (and potentially other devs) to quickly add features for people without rebuilding the entire library.
+
+## Extension Method List
+
+The following is a complete list of the extension methods available for use:
+
+---
+
+- **the `A.extend(obj)` method**
+
+- Arguments:  
+    - `obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to the `A` / `Chapel.Audio` object.
+
+---
+
+- **the `A.extendTrack(obj)` method**
+
+- Arguments:  
+    - `obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to the Track constructor (e.g. static methods).
+
+---
+
+- **the `A.extendTrackProto(obj)` method**
+
+- Arguments:  
+    - `obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to Track instances (e.g. instance methods).
+
+---
+
+- **the `A.extendGroup(obj)` method**
+
+- Arguments:  
+    - `obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to the Group constructor (e.g. static methods).
+
+---
+
+- **the `A.extendGroupProto(obj)` method**
+
+- Arguments:  
+    - `obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to Group instances (e.g. instance methods).
+
+---
+
+- **the `A.extendPlaylist(obj)` method**
+
+- Arguments:  
+    - `obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to the Playlist constructor (e.g. static methods).
+
+---
+
+- **the `A.extendPlaylistProto(obj)` method**
+
+- Arguments:  
+    - `obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to the Playlist instances (e.g. instance methods).
+
+---

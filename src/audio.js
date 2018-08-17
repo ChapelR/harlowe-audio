@@ -40,6 +40,18 @@
 
     var safeAudioStart = 100;
 
+    function _extend (obj, newStuff) {
+        if (typeof obj !== 'object' || typeof newStuff !== 'object') {
+            throw new Error('Invalid extension.');
+        }
+        Object.keys(newStuff).forEach( function (key) {
+            if (obj[key] !== undefined) {
+                throw new Error('Invalid extension: cannot clobber existing property "' + key + '"');
+            }
+            obj[key] = newStuff[key];
+        });
+    }
+
     var Audio = {
         // no API
         loaded : [],
@@ -114,7 +126,8 @@
         },
         clearPrefs : function () {
             state.clear(options.storagekey);
-        }
+        },
+        extend : {}
     };
 
     /** 
@@ -259,6 +272,14 @@
         return Track.list.find( function (track) {
             return track.id === id;
         });
+    };
+
+    Track.extend = function (data) {
+        _extend(Track, data);
+    };
+
+    Track.extendPrototype = function (data) {
+        _extend(Track.prototype, data);
     };
 
     Track.prototype = {
@@ -555,6 +576,14 @@
         });
     };
 
+    Audio.group.extend = function (data) {
+        _extend(Audio.group, data);
+    };
+
+    Audio.group.extendPrototype = function (data) {
+        _extend(Audio.group.prototype, data);
+    };
+
     // Audio.group('playing').pause(); or Audio.group('playing').mute(true);
 
     Audio.group.prototype = {
@@ -618,6 +647,14 @@
         }
         Playlist.list[id] = new Playlist(id, trackList);
         return Playlist.list[id];
+    };
+
+    Playlist.extend = function (data) {
+        _extend(Playlist, data);
+    };
+
+    Playlist.extendPrototype = function (data) {
+        _extend(Playlist.prototype, data);
     };
 
     Playlist.prototype = {
@@ -711,6 +748,17 @@
     Audio.playlist = function (id) {
         return Playlist.list[id] || null;
     };
+
+    // extensions
+    Audio.extend = function (data) {
+        _extend(Audio, data);
+    };
+    Audio.extendTrack = Track.extend;
+    Audio.extendTrackProto = Track.extendPrototype;
+    Audio.extendGroup = Audio.group.extend;
+    Audio.extendGroupProto = Audio.group.extendPrototype;
+    Audio.extendPlaylist = Playlist.extend;
+    Audio.extendPlaylistProto = Playlist.extendPrototype;
 
     window.Chapel = window.Chapel || {};
 
