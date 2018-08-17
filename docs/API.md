@@ -1,28 +1,32 @@
 # Overview
 
-The `window.A` (optionally) and the `window.Chapel.Audio` objects hold everything. The actual internal structure of these objects looks something like this:
+The `window.Chapel.Audio` object is the root object of this library. The `globalA` [configuration option](/#configuration) sets `window.A` as a reference to the main object as long as it's undefined; we'll be using the `A` object throughout this document, but `Chapel.Audio` also works, and should be used if you've already defined a different `window.A` or if you've shut off the `globalA` option.
+
+The internal structure of the object looks something like this:
 
 ```javascript
-A = {
+{
     loaded : [], // an array of track IDs that are loaded and currenlty playable
     classes : { // holds the constructor functions
-        Track : function (){}, // the Track constructor
-        Playlist : function (){} // the Playlist constructor
+        Track, // the Track constructor
+        Playlist // the Playlist constructor
     },
     groups : { // the list of groups
-        playing : [], // the built-in playing group
-        looping : [], // the built-in looping group
-        custom : {} // user-defined groups
+        playing, // the built-in playing group
+        looping, // the built-in looping group
+        custom : {
+            // user-defined groups go here
+        } 
     },
     master : { // the master audio control states
-        mute : boolean, // the master mute state
-        volume : number // the master volume state
+        mute, // the master mute state
+        volume // the master volume state
     },
     // several methods
 }
 ```
 
-When you want to create a new Track, Playlist, or Group, you should generally do it through the `window.A` methods, not through the constructors. The method versions have error handling, smooth out issues, properly register things, provide references to other subsystems, etc. For example:
+When you want to create a new Track or Playlist you should do it through the `window.A` methods (e.g. `A.newTrack()`), not through the constructors. The method versions have error handling, smooth out issues, properly register things, provide references to other subsystems, etc. For example:
 
 ```javascript
 var x = new A.classes.Track('my track', './track.mp3');
@@ -387,6 +391,17 @@ Safely adds properties and methods to the Track constructor (e.g. static methods
 
 ---
 
+- **the `A.classes.Track.extendPrototype(obj)` method**
+
+- Arguments:  
+    -`obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to the Track prototype (e.g. instance methods).
+
+---
+
 - **the `A.classes.Track.get(id)` method**
 
 - Arguments:  
@@ -696,5 +711,520 @@ Adds the track to a group.
 - Returns: the track (chainable).
 
 Removes the track from a group.
+
+---
+
+## Instance Properties
+
+---
+
+- **the `<track>.id` property**
+
+The track's id / name.
+
+---
+
+- **the `<track>.$el` property**
+
+A reference to the track's audio element, wrapped in jQuery. Same as `$(<track>.unwrap)`.
+
+---
+
+- **the `<track>.unwrap` property**
+
+A reference to the track's audio element. Same as `<track>.$el[0]`.
+
+---
+
+- **the `<track>.source` property**
+
+An array of the tracks audio file sources.
+
+---
+
+## Track Audio Element Attributes
+
+Track audio elements have a number of special HTML attributes:
+
+---
+
+- **the `data-track` attribute**
+
+The track's name / id is stored in this attribute.
+
+---
+
+- **the `data-volume` attribute**
+
+The track's volume is stored in this attribute. The actual volume attribute can't be trusted, because it gets changed by the master volume state.
+
+---
+
+- **the `data-mute` attribute**
+
+The track's mute state is stored in this attribute. The actual mute state can't be trusted, because it gets changed by the master mute state.
+
+---
+
+# Groups
+
+Unlike other contructors, the group constructor is just on `A.group()` and is called directly by user code. The actual data groups use is stored in the `A.groups` object. Use `A.createGroup()` to easily set them up.
+
+## The Group Constructor
+
+---
+
+- **the `A.group(id)` constructor**
+
+- Arguments:  
+    - `id` (string) the name of a property in the `A.groups` or `A.groups.custom` objects. 
+
+- Returns: a group instance.
+
+Creates a new `Group` from the data associated with that group's id in the `A.groups` data structure.
+
+---
+
+## Static Methods
+
+---
+
+- **the `A.group.is(thing)` method**
+
+- Arguments:  
+    - `thing` (any) something to test. 
+
+- Returns: boolean.
+
+Returns whether the passed *thing* is a group.
+
+---
+
+- **the `A.group.runOnAll(groupInstance, methodName [, argsArray])` method**
+
+- Arguments:  
+    - `groupInstance` (group) a group.  
+    - `methodName` (string) the name of a track method.  
+    - `argsArray` (array) an array of arguments to pass to the method.
+
+- Returns: nothing.
+
+When given a valid group instance and a valid track method name, runs the method on every track in the group.
+
+---
+
+- **the `A.group.extend(obj)` method**
+
+- Arguments:  
+    -`obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to the group constructor (e.g. static methods).
+
+---
+
+- **the `A.group.extendPrototype(obj)` method**
+
+- Arguments:  
+    -`obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to the group prototype (e.g. instance methods).
+
+---
+
+## Instance Methods
+
+---
+
+- **the `<group>.play()` method**
+
+- Arguments: none.
+
+- Returns: the group (chainable).
+
+Attempts to play every sound in the group. At once. Probably not useful, but included for completeness.
+
+---
+
+- **the `<group>.pause()` method**
+
+- Arguments: none.
+
+- Returns: the group (chainable).
+
+Pauses all the tracks in the group.
+
+---
+
+- **the `<group>.stop()` method**
+
+- Arguments: none.
+
+- Returns: the group (chainable).
+
+Stops all the sounds in the group.
+
+---
+
+- **the `<group>.mute(bool)` method**
+
+- Arguments:  
+    -`bool`: (boolen) if `true`, mutes the tracks; if `false`, unmutes them.
+
+- Returns: the group (chainable).
+
+Mutes or unmutes every track in the group.
+
+---
+
+- **the `<group>.volume(level)` method**
+
+- Arguments:  
+    -`level`: (number) a volume level between `0` and `1`.
+
+- Returns: the group (chainable).
+
+Adjusts all the volumes of all the tracks in the group.
+
+---
+
+- **the `<group>.loop(bool)` method**
+
+- Arguments:  
+    -`bool`: (boolean) if `true`, sets all the tracks to loop; if `false`, stops them from looping.
+
+- Returns: the group (chainable).
+
+Set the tracks to loop or stop them from looping.
+
+---
+
+- **the `<group>.run(methodName, args [, args...])` method**
+
+- Arguments:   
+    - `methodName` (string) the name of a track method.  
+    - `args` (string|array) a list or array of arguments to pass to the method.
+
+- Returns: the group (chainable).
+
+When given a valid track method name, runs the method on every track in the group.
+
+---
+
+## Instance Properties
+
+---
+
+- **the `<group>.members` property**
+
+An array of references to track instances that are in this group.
+
+---
+
+# Playlists
+
+Playlists are a bit more complicated than groups.
+
+## The Playlist Constructor
+
+---
+
+- **the `A.classes.Playlist(id, trackIDs [, trackIDs...])` constructor**
+
+- Arguments:  
+    - `id` (string) the name of the playlist to create.  
+    - `trackIDs` (string|array) a list or array of track ids.
+
+- Returns: a playlist instance.
+
+Creates a new `Playlist` with the given id and adds the tracks provided. Like with Tracks, the Playlist constructor should generally not be called by user code.
+
+---
+
+## Static Methods
+
+---
+
+- **the `A.classes.Playlist.is(thing)` method**
+
+- Arguments:  
+    - `thing` (any) the thing to test.
+
+- Returns: boolean.
+
+Returns whether the passed *thing* is a Playlist instance.
+
+---
+
+- **the `A.classes.Playlist.add(id, trackIDs [, trackIDs...])` method**
+
+- Arguments:  
+    - `id` (string) the name of the playlist to create.  
+    - `trackIDs` (string|array) a list or array of track ids.
+
+- Returns: a playlist instance.
+
+Creates a new `Playlist` with the given id and adds the tracks provided. This method gives the new playlist the necessary plumbing and functionality to interact with everything else.
+
+---
+
+- **the `A.classes.Playlist.extend(obj)` method**
+
+- Arguments:  
+    -`obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to the Playlist constructor (e.g. static methods).
+
+---
+
+- **the `A.classes.Playlist.extendPrototype(obj)` method**
+
+- Arguments:  
+    -`obj` (object) an object containing the properties and methods you want to add.
+
+- Returns: none.
+
+Safely adds properties and methods to the Playlist prototype (e.g. instance methods).
+
+---
+
+## Instance Methods
+
+---
+
+- **the `<playlist>.play([start])` method**
+
+- Arguments:  
+    - `start`: (optional) (number) the track to start at, list is 0-based
+
+- Returns: the playlist (chainable).
+
+Plays the playlist. Every track will be played in order, one after another. You can optionally start at any one of the tracks by providing a number (0 will be the first track).
+
+---
+
+- **the `<playlist>.pause()` method**
+
+- Arguments: none.
+
+- Returns: the playlist (chainable).
+
+Pauses the playlist's playback.
+
+---
+
+- **the `<playlist>.stop()` method**
+
+- Arguments: none.
+
+- Returns: the playlist (chainable).
+
+Stops the playlist.
+
+---
+
+- **the `<playlist>.loop(bool)` method**
+
+- Arguments:  
+    - `bool`: (boolean) causes the playlist to repeat after it ends if `true`.
+
+- Returns: the playlist (chainable).
+
+Set the playlist to loop (not each track inside) or set it to stop looping.
+
+---
+
+- **the `<playlist>.random()` method**
+
+- Arguments: none.
+
+- Returns: a track.
+
+Returns a random track from the playlist--you can then use [track methods](#track-methods) on it.
+
+---
+
+- **the `<playlist>.shuffle()` method**
+
+- Arguments: none.
+
+- Returns: the playlist (chainable).
+
+Shuffles (randomizes) the playlist. Be warned: the default order cannot be restored without creating a new playlist.
+
+---
+
+- **the `<playlist>.isPlaying()` method**
+
+- Arguments: none.
+
+- Returns: boolean.
+
+Returns true if the playlist is currently being played in some fashion.
+
+---
+
+- **the `<playlist>.clone()` method**
+
+- Arguments: none.
+
+- Returns: a new playlist instance.
+
+Creates and returns a deep copy of the playlist.
+
+---
+
+## Instance Properties
+
+---
+
+- **the `<playlist>.id` property**
+
+The playlist's name / id.
+
+---
+
+- **the `<playlist>.tracks` property**
+
+An array of references to the track instances in the playlist.
+
+---
+
+- **the `<playlist>.looping` property**
+
+Boolean `true` if the playlist is set to loop, `false` otherwise.
+
+---
+
+- **the `<playlist>.playing` property**
+
+Boolean `true` if the playlist is considered to be playing, `false` otherwise.
+
+---
+
+- **the `<playlist>.current` property**
+
+The string id of the currently playing track, or an empty string if no tracks are playing.
+
+---
+
+# Other APIs
+
+Now that the big ones are out of the way:
+
+## The Controls API
+
+### Methods
+
+---
+
+- **the `A.controls.close()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Closes (shrinks) the panel.
+
+---
+
+- **the `A.controls.open()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Opens (expands) the panel.
+
+---
+
+- **the `A.controls.toggle()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Toggles the panel between the opened and closed states.
+
+---
+
+- **the `A.controls.hide()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Hides the panel completely.
+
+---
+
+- **the `A.controls.show()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Makes the panel visible after hiding it.
+
+---
+
+### Properties
+
+---
+
+- **the `A.controls.$panel` property**
+
+JQuery object referencing the entire control panel area.
+
+---
+
+- **the `A.controls.$volume` property**
+
+JQuery object referencing the volume range input.
+
+---
+
+- **the `A.controls.$mute` property**
+
+JQuery object referencing the mute button.
+
+---
+
+## The LoadScreen API
+
+---
+
+- **the `A.loadScreen.show()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Shows the loading screen.
+
+---
+
+- **the `A.loadScreen.dismiss()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Dismisses the loading screen.
+
+---
+
+- **the `A.loadScreen.kill()` method**
+
+- Arguments: none.
+
+- Returns: none.
+
+Completely removes the loading screen from the DOM.
 
 ---
