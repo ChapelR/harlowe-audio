@@ -126,8 +126,7 @@
         },
         clearPrefs : function () {
             state.clear(options.storagekey);
-        },
-        extend : {}
+        }
     };
 
     /** 

@@ -2,6 +2,8 @@
 
 **Warning**: Currently in Beta; may contain bugs!
 
+[Complete API Reference](./API.md)
+
 If you just need some audio and don't need anything too complex, start at [Installation](#installation) and then read some of the [examples](#detailed-examples) to see if what you want to do is covered. If you want anything more complex than that, or if you have grand, complex ideas, you'll need to read the whole thing.
 
 ## Introduction

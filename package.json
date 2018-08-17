@@ -25,7 +25,8 @@
     "gulp": "gulp",
     "clean": "gulp clean",
     "build": "gulp build",
-    "go": "npm run build && npm test"
+    "go": "npm run build && npm test",
+    "docs": "docsify serve ./docs -o"
   },
   "keywords": [
     "twine",
