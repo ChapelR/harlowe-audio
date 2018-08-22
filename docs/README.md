@@ -26,6 +26,12 @@ This library is free and dedicated to the public domain. That means you don't ne
 
 The best place to ask for help if the issue is on your end is [the Twine Q&A](https://twinery.org/questions/), [the Subreddit](https://www.reddit.com/r/twinegames/), or [the Discord server](https://discordapp.com/invite/n5dJvPp). If you suspect that the problem is in the code or otherwise on my end, [open an issue](https://github.com/ChapelR/harlowe-audio/issues/new).
 
+**Donate**
+
+Note: I suggest donating to [Twine development](https://www.patreon.com/klembot) if you really want to help out, but I'd welcome a few dollars if you feel like it.
+
+[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/F1F8IC35)
+
 ## Installation
 
 All you need to install this library is the code. There are two ways to get it: [copy and pasting from GitHub](https://github.com/ChapelR/harlowe-audio/tree/master/dist), or [via a Google Drive download](https://drive.google.com/file/d/1ThjHsBDzAwYNLc0p8g_V1fC-dLhBc8EH/view?usp=sharing). If you download the code, be sure to open it and mess with it in a text editor, *not* a word processor. Once you've got the code, you'll need to put in in your project.
