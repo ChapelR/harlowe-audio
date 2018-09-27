@@ -2,6 +2,8 @@
 
 **Warning**: Currently in Beta; may contain bugs!
 
+[Demo](./demo/ ':ignore')
+
 [Complete API Reference](./API.md)
 
 If you just need some audio and don't need anything too complex, start at [Installation](#installation) and then read some of the [examples](#detailed-examples) to see if what you want to do is covered. If you want anything more complex than that, or if you have grand, complex ideas, you'll need to read the whole thing.
@@ -1022,6 +1024,8 @@ A.extendTrackProto({
 ```
 
 These functions are probably most useful for people already experienced with JavaScript, but will allow me (and potentially other devs) to quickly add features for people without rebuilding the entire library.
+
+[Example extensions.](https://gist.github.com/ChapelR/57655e2a9a75352c70cf7d605858d7c7)
 
 ## Extension Method List
 

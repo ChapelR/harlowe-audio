@@ -1,6 +1,11 @@
 (function () {
     'use strict';
 
+    var $container = $(document.createElement('div'))
+        .attr('id', 'audio-container')
+        .css('display', 'none')
+        .appendTo(document.body);
+
     var state = {
         save : function (key, data) {
             // save user prefs
@@ -251,6 +256,7 @@
         track.$el.on('canplaythrough', function () {
             Track.emit(':loaded', track);
         });
+        track.attach();
         return track;
     };
 
@@ -281,6 +287,17 @@
         _extend(Track.prototype, data);
     };
 
+    Track.removeFromDOM = function (track) {
+        if (typeof track === 'string') {
+            track = Track.get(track);
+        }
+        if (track && Track.is(track)) {
+            track.unattach();
+        } else {
+            $container.remove();
+        }
+    };
+
     Track.prototype = {
         constructor : Track,
         emit : function (type) {
@@ -292,12 +309,19 @@
         clone : function () { 
             return new Track(this.id, this.sources); 
         },
-        attach : function () { 
-            this.$audio.appendTo(document.body); 
+        isAttached : function () {
+            return $.contains($container[0], this.unwrap);
+        },
+        attach : function () {
+            if (!this.isAttached()) {
+                this.$el.appendTo($container);
+            }
             return this;
         },
         unattach : function () { 
-            this.$audio.remove(); 
+            if (this.isAttached()) {
+                this.$el.remove();
+            }
             return this;
         },
         isPlaying : function () {
@@ -531,9 +555,7 @@
 
     Audio.classes.Track = Track;
     Audio.newTrack = Track.add;
-    Audio.track = function (id) {
-        return Track.get(id);
-    };
+    Audio.track = Track.get;
 
     function createAudioGroup (groupName, trackIDs) {
         if (!trackIDs || !Array.isArray(trackIDs)) {
@@ -562,6 +584,10 @@
             this.members = Audio.groups.custom[name];
         } else {
             this.members = Audio.groups[name];
+        }
+        if (!Array.isArray(this.members)) {
+            this.members = [];
+            console.error('Could not find members for track group "' + name + '"!');
         }
     };
 
@@ -700,7 +726,6 @@
             }
 
             var track = self.tracks[i];
-            console.log(track.id, track);
             var cached = track.isLooping();
             track.loop(false);
 
