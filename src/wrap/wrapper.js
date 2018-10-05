@@ -18,7 +18,10 @@
             show : true,
             startClosed : true
         },
-        forceDismiss : 5000
+        loadLimit : {
+            track : 500,
+            total : 8000
+        }
     };
 
     /*** library code */

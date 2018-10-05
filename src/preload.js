@@ -21,7 +21,7 @@
     }
 
     function loadSources () { 
-        if (_state.pastLength || _state.futureLength) {
+        if (_state.pastLength || _state.futureLength || $.browser.mobile) {
             // do not re-preload
             return;
         }
@@ -33,7 +33,6 @@
         var delay = 100 + options.loadDelay;
         var trackList = Chapel.Audio.classes.Track.list;
         var loaded = Chapel.Audio.loaded;
-        var successful = false;
 
         if (!trackList.length) {
             setTimeout(loaderDismiss, delay);
@@ -52,11 +51,8 @@
               *  config to 0 or false/falsy to make the game fail to load.
              **/
             setTimeout( function () {
-                if (!successful) {
-                    console.error('HAL.js: some audio sources could not be loaded within the `forceDismiss` time limit.');
-                    loaderDismiss();
-                }
-            }, options.forceDismiss);
+                loaderDismiss();
+            }, options.loadLimit.total);
         }
 
         function _load () {
@@ -75,22 +71,35 @@
                 // check the ready state to avoid unfortunate weirdness
                 var track = Chapel.Audio.classes.Track.get(id);
                 if (track.unwrap.readyState < 2) {
-                    track.$el
-                        .one('canplay', function () {
-                            _load();
-                        });
+
+                    var _done = false;
+
+                    track.$el.one('canplay', function () {
+                        _load();
+                        _done = true;
+                    });
+
+                    setTimeout( function () {
+                        if (_done) {
+                            return;
+                        }
+                        track.$el.off('canplay');
+                        _load();
+                    }, options.loadLimit.track);
+
                 } else {
+
                     if (!loaded.includes(id)) {
                         // make sure the loaded list is accurate for debug purposes.
                         loaded.push(id);
                     }
+
                     _load();
                 }
             }
         }
 
         _load();
-        successful = true;
     }
 
     // export to Chapel namespace
