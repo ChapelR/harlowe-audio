@@ -68,3 +68,15 @@ div#audio-controls tw-link#audio-panel-toggle {
 div#audio-controls.closed tw-link#audio-panel-toggle {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAQAAABLCVATAAAAZElEQVR4Ae3TpwGAMBQAUfrEeHB0cDhcXBSO7ehlgBw9N8BL/YZO95r6uA/UEbOv+ylfHRJ9z1BWLynKJqmWohyS6ijKOygKCpmjZYqXTTA2xUiCsShGAMw8/Q3ArFgFMHek0w3WCaR74eO2YQAAAABJRU5ErkJggg==);
 }
+
+@media screen and (max-width: 800px) {
+  div#audio-controls {
+    font-size: 2em;
+  }
+  div#audio-controls.closed {
+    left: -12em;
+  }
+  div#audio-controls.closed tw-link#audio-panel-toggle {
+    right: -1.5em;
+  }
+}
