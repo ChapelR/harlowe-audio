@@ -9,7 +9,7 @@
     A.createGroup('bgm', 'cibelle', 'que-pena');
     A.createPlaylist('bgm', 'cibelle', 'que-pena');
 
-    A.preload();
+    // A.preload();
 </script>
 
 :: Start
