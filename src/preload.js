@@ -42,6 +42,20 @@
             return tr.id;
         });
 
+        if (options.forceDismiss) {
+            /**
+              *  Dismiss loading screen once tolerance for waiting is expired.
+              *  This will ensure that unreliable connections, like on mobile data,
+              *  aren't stuck in a perpetual load cycle if audio fails to load.
+              *  Games that require audio to be playable may set the `options.forceDismiss`
+              *  config to 0 or false/falsy to make the game fail to load.
+             **/
+            setTimeout( function () {
+                console.error('HAL.js: some audio sources could not be loaded within the `forceDismiss` time limit.');
+                loaderDismiss();
+            }, options.forceDismiss);
+        }
+
         function _load () {
 
             if (!ids.length) {
@@ -55,11 +69,20 @@
                 // already done
                 _load();
             } else {
-                Chapel.Audio.classes.Track.get(id).$el
-                    .off('canplay')
-                    .one('canplay', function () {
-                        _load();
-                    });
+                // check the ready state to avoid unfortunate weirdness
+                var track = Chapel.Audio.classes.Track.get(id);
+                if (track.unwrap.readyState < 2) {
+                    track.$el
+                        .one('canplay', function () {
+                            _load();
+                        });
+                } else {
+                    if (!loaded.includes(id)) {
+                        // make sure the loaded list is accurate for debug purposes.
+                        loaded.push(id);
+                    }
+                    _load();
+                }
             }
         }
 

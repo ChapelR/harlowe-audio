@@ -17,7 +17,8 @@
         controls : {
             show : true,
             startClosed : true
-        }
+        },
+        forceDismiss : 5000
     };
 
     /*** library code */
