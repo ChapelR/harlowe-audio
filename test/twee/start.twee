@@ -14,7 +14,11 @@
 
 :: Start
 <script>A.playlist('bgm').random().loop(true).playWhenPossible();</script>\
-Welcome to the Harlowe Audio Library demo!
+Welcome to the Harlowe Audio Library demo! (link: 'click')[{<script>
+    var prel = A.track('nope').$el.attr('preload');
+    console.log(prel)
+    $('#preload').append(prel);
+</script><span id='preload'></span>}]
 
 * (link-repeat: "View this demo's source code.")[(open-url: 'https://github.com/ChapelR/harlowe-audio/tree/master/docs/demo')]
 * (link-repeat: "Read the documentation.")[(open-url: 'https://twinelab.net/harlowe-audio/#/')]

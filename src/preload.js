@@ -33,6 +33,7 @@
         var delay = 100 + options.loadDelay;
         var trackList = Chapel.Audio.classes.Track.list;
         var loaded = Chapel.Audio.loaded;
+        var successful = false;
 
         if (!trackList.length) {
             setTimeout(loaderDismiss, delay);
@@ -51,8 +52,10 @@
               *  config to 0 or false/falsy to make the game fail to load.
              **/
             setTimeout( function () {
-                console.error('HAL.js: some audio sources could not be loaded within the `forceDismiss` time limit.');
-                loaderDismiss();
+                if (!successful) {
+                    console.error('HAL.js: some audio sources could not be loaded within the `forceDismiss` time limit.');
+                    loaderDismiss();
+                }
             }, options.forceDismiss);
         }
 
@@ -87,6 +90,7 @@
         }
 
         _load();
+        successful = true;
     }
 
     // export to Chapel namespace
