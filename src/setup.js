@@ -10,5 +10,6 @@
     });
 
     Chapel.Audio.classes.Track.renew();
+    Chapel.Audio.controls.updateVolume();
 
 }());

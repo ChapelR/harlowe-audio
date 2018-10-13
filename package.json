@@ -21,7 +21,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "tweego -f harlowe-2 -o test/index.html dist test/twee && start test/index.html",
+    "test": "tweego -f harlowe-2 --head=test/head.html -o test/index.html dist test/twee && start test/index.html",
     "gulp": "gulp",
     "clean": "gulp clean",
     "build": "gulp build",

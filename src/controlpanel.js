@@ -3,13 +3,22 @@
 
     if (options.controls.show) {
 
+        var $user = $(document.createElement('div'))
+            .attr('id', 'story-menu')
+            .css('display', 'none');
+
+        var $volTitle = $(document.createElement('span'))
+            .attr('id', 'vol-title')
+            .append('Volume');
+
         var $volume = $(document.createElement('input'))
             .attr({
                 id : 'audio-volume',
                 type : 'range',
                 min : 1,
                 max : 99,
-                step : 1
+                step : 1,
+                title : 'Volume'
             });
 
         var starting = Math.trunc(window.Chapel.Audio.master.volume * 100);
@@ -20,12 +29,23 @@
         }
         $volume.attr('value', starting);
 
+        var volDisplay = function (val) {
+            if (val === undefined) {
+                val = $volume.val();
+            }
+            $volTitle.empty().append('Volume ' + val);
+        };
+
         $volume.on('input', function () {
             window.Chapel.Audio.volume($(this).val() / 100);
+            volDisplay($(this).val());
         });
 
         var $mute = $(document.createElement('tw-link'))
-            .attr('id', 'audio-mute')
+            .attr({
+                id : 'audio-mute',
+                title : 'Mute'
+            })
             .append('Mute <span></span>')
             .on('click', function (ev) {
                 ev.preventDefault();
@@ -46,7 +66,7 @@
 
         var $panel = $(document.createElement('div'))
             .attr('id', 'audio-controls')
-            .append($volume, $mute, $toggle)
+            .append($user, $volTitle, $volume, $mute, $toggle)
             .appendTo(document.body);
 
         if (options.controls.startClosed) {
@@ -60,6 +80,7 @@
             $panel : $panel,
             $volume : $volume,
             $mute : $mute,
+            $user : $user,
             close : function () {
                 $panel.addClass('closed');
             },
@@ -74,7 +95,8 @@
             },
             show : function () {
                 $panel.css('display', 'block');
-            }
+            },
+            updateVolume : volDisplay
         };
     }
 

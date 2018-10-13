@@ -1,3 +1,13 @@
+## v1.1.0
+
+This version marks the first non-beta release version! Don't fear using this in production code anymore (or anymore than normal).
+
+- Fixed preloading bugs on mobile.
+- Cleaned up sidebar controls UI.
+- Created API for accessing and editing the UI from user code.
+- Fixed mobile UI scaling in the demo, but unfortunately it can't be fixed from within the library.
+- Internal improvements.
+
 ## v1.0.1
 
 - Fixed a bug with preloading in some browsers.

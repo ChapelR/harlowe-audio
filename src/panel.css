@@ -1,11 +1,17 @@
 input#audio-volume {
   width: 100%;
-  padding: 10em 0;
+  padding: 2em 0;
+}
+span#vol-title {
+  position: relative;
+  bottom: -2em;
+  font-size: 1rem;
+  float: left;
 }
 tw-link#audio-mute {
   display: inline-block;
   padding: 0.3em;
-  width: fit-content;
+  width: 90%;
   text-decoration: none;
   color: #111;
   background: #eee;
@@ -70,13 +76,31 @@ div#audio-controls.closed tw-link#audio-panel-toggle {
 }
 
 @media screen and (max-width: 800px) {
-  div#audio-controls {
-    font-size: 2em;
-  }
   div#audio-controls.closed {
     left: -12em;
   }
   div#audio-controls.closed tw-link#audio-panel-toggle {
     right: -1.5em;
   }
+}
+
+/*  user story menu elements  */
+div#story-menu {
+  margin: 1em 0;
+}
+
+tw-link.story-menu {
+  width: 100%;
+  display: block;
+  background: #eee;
+  color: #111;
+  border: 1px solid #333;
+}
+
+tw-link.story-menu:hover {
+  opacity: 0.8;
+}
+
+tw-link.story-menu:active {
+  opacity: 0.6;
 }

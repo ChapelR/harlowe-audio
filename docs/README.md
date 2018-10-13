@@ -1,7 +1,5 @@
 # Getting Started
 
-**Warning**: Currently in Beta; may contain bugs!
-
 [Demo](./demo/ ':ignore')
 
 [Complete API Reference](./API.md)
