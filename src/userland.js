@@ -1,9 +1,10 @@
 (function () {
     'use strict';
 
+    // userland sidebar editing
+
     var _engine = Engine;
 
-    // userland sidebar editing
     var $user = Chapel.Audio.controls.$user;
 
     function checkDisp () {
@@ -15,46 +16,98 @@
         if (!checkDisp()) {
             $user.css('display', 'block');
         }
+        return $user;
     }
 
     function hideUserMenu () {
         if (checkDisp()) {
             $user.css('display', 'none');
         }
+        return $user;
     }
 
     function addLinks (text, psg, cb) {
         // add tw-link elements to the userland sidebar area
-        if (!cb && typeof psg === 'function') {
-            cb = psg;
-            psg = null;
-        }
-        if (!psg || typeof psg !== 'string') {
-            psg = null;
-        }
-        if (!cb || typeof cb !== 'function') {
-            cb = null;
-        }
+        var passage, callback;
+
         if (!text || typeof text !== 'string') {
+            var msg = 'Cannot add a link with the text "' + (text === undefined) ? 'undefined' : JSON.stringify(text) + '".';
+            alert(msg);
+            console.error(msg);
             return;
         }
+
+        if (!cb && typeof psg === 'function') {
+            callback = psg;
+            passage = null;
+        } else {
+            if (psg && typeof psg === 'string') {
+                passage = psg;
+            }
+            if (cb && typeof cb === 'function') {
+                callback = cb;
+            }
+        }
+
         var $link = $(document.createElement('tw-link'))
             .append(text)
-            .attr('tabindex', '0')
+            .attr({ 
+                tabindex : '0',
+                name : text.toLowerCase().trim()
+            })
             .on('click', function () {
-                if (psg) {
-                    _engine.goToPassage(psg);
+                if (passage) {
+                    _engine.goToPassage(passage);
                 }
-                if (cb) {
-                    cb();
+                if (callback) {
+                    callback();
                 }
             })
             .addClass('story-menu')
             .appendTo($user);
 
         showUserMenu();
+
+        return $link;
     }
 
-    Chapel.Audio.sidebar = { add : addLinks };
+    function clearLinks () {
+        $user.empty();
+        return hideUserMenu();
+    }
+
+    function hideLink (text) {
+        text = text.toLowerCase().trim();
+        $('tw-link.story-menu[name="' + text + '"]').addClass('hide');
+    }
+
+    function showLink (text) {
+        text = text.toLowerCase().trim();
+        $('tw-link.story-menu[name="' + text + '"]').removeClass('hide');
+    }
+
+    function toggleLink (text) {
+        text = text.toLowerCase().trim();
+        $('tw-link.story-menu[name="' + text + '"]').toggleClass('hide');
+    }
+
+    function deleteLink (text) {
+        text = text.toLowerCase().trim();
+        $('tw-link.story-menu[name="' + text + '"]').remove();
+    }
+
+    Chapel.Audio.menu = {
+        hide : hideUserMenu,
+        show : showUserMenu,
+        isShown : checkDisp,
+        links : {
+            add : addLinks,
+            clear : clearLinks,
+            hide : hideLink,
+            show : showLink,
+            toggle : toggleLink,
+            remove : deleteLink
+        }
+    };
 
 }());

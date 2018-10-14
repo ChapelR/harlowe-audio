@@ -16,7 +16,8 @@
         includeFixes : false,
         controls : {
             show : true,
-            startClosed : true
+            startClosed : true,
+            volumeDisplay : true
         },
         loadLimit : {
             track : 500,

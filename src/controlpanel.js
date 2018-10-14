@@ -11,6 +11,10 @@
             .attr('id', 'vol-title')
             .append('Volume');
 
+        if (!options.controls.volumeDisplay) {
+            $volTitle.css('display', 'none');
+        }
+
         var $volume = $(document.createElement('input'))
             .attr({
                 id : 'audio-volume',

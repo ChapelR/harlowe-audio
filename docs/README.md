@@ -59,10 +59,15 @@ var options = {
     storagekey : '%%tw-audio',
     persistPrefs : true,
     globalA : true,
-    includeFixes : true,
+    includeFixes : false,
     controls : {
         show : true,
-        startClosed : true
+        startClosed : true,
+        volumeDisplay : true
+    },
+    loadLimit : {
+        track : 500,
+        total : 8000
     }
 };
 ```
@@ -146,6 +151,30 @@ This library includes a control panel for users to control the master volume and
 Set this option to `true` or `false`.
 
 The control panel slides in and out from the side of the screen. Use this option if you want to start it closed (taking up very little space).
+
+---
+
+- **the `controls.volumeDisplay` option**
+
+Set this option to `true` or `false`.
+
+Determines whether a text readout of the current volume is displayed next to the volume control.
+
+---
+
+- **the `loadLimit.track` option**
+
+Set this option to number of milliseconds.
+
+Use this option to set a tolerance (in MS) for how long the preloading function will wait attempting to load a single track before moving on. In combination with the below option, this setting should be used to make sure the game doesn't just hang forever on slower connections.
+
+---
+
+- **the `loadLimit.total` option**
+
+Set this option to number of milliseconds.
+
+Use this option to set a tolerance (in MS) for how long the preloading function will wait attempting to load all of the tracks before dismissing the load screen. In combination with the above option, this setting should be used to make sure the game doesn't just hang forever on slower connections.
 
 ---
 
@@ -724,6 +753,111 @@ Makes the panel visible after hiding it.
 ## Load Screen
 
 This library adds a loading screen to Harlowe that is superficially similar to SugarCube's. You can use this load screen by calling the `A.preload()` method after defining some tracks. You can potentially use it for other things too, if you want. Show it by calling `A.loadScreen.show()`, and get rid of it with `A.loadScreen.dismiss()`. That's really all there is to it.
+
+## The Menu API
+
+> TODO: Add this to the API section. Improve this aspect of the demo. Write code examples.
+
+This API allows you to add links to the sidebar as a 'story menu', similar to what can be done in SugarCube. THese links can be used to navigate to a passage, run a JavaScript function, or both. They can be hidden, shown, toggled, and removed at any time.
+
+---
+
+- **the `A.menu.hide()` method**
+
+- Arguments: none.
+
+- Returns: the `#story-menu` element (jQuery).
+
+Hides the story menu portion of the side bar.
+
+---
+
+- **the `A.menu.show()` method**
+
+- Arguments: none.
+
+- Returns: the `#story-menu` element (jQuery).
+
+Shows the story menu portion of the side bar.
+
+---
+
+- **the `A.menu.isShown()` method**
+
+- Arguments: none.
+
+- Returns: boolean.
+
+Returns whether the story menu portion of the side bar is currently visible.
+
+---
+
+- **the `A.menu.links.add(linkText, [passageName], [callback])` method**
+
+- Arguments: 
+    - `linkText`: (string) the text of the link.
+    - `passageName`: (optional) (string) a passage name to navigate to when the link is clicked.
+    - `callback`: (optional) (string) a function to run when the link is clicked.
+
+- Returns: the generated link (jQuery).
+
+This method creates a story menu link. You must pass it text to display or it will raise an error. You can then pass it a passage name to navigate to, a callback function to run on click, both, or neither. If you include both, they must be included in the indicated order.
+
+---
+
+- **the `A.menu.links.clear()` method**
+
+- Arguments: none.
+
+- Returns: the `#story-menu` element (jQuery).
+
+This method removes all of the links from the story menu.
+
+---
+
+- **the `A.menu.links.hide(text)` method**
+
+- Arguments: 
+    -`text`: the text of the link you want to alter.
+
+- Returns: nothing.
+
+This method hides a story menu link. If there are multiple links with the same link text, all of them will be hidden.
+
+---
+
+- **the `A.menu.links.show(text)` method**
+
+- Arguments: 
+    -`text`: the text of the link you want to alter.
+
+- Returns: nothing.
+
+This method shows a hidden story menu link. If there are multiple links with the same link text, all of them will be shown.
+
+---
+
+- **the `A.menu.links.toggle(text)` method**
+
+- Arguments: 
+    -`text`: the text of the link you want to alter.
+
+- Returns: nothing.
+
+This method toggles the visibility a story menu link (hiding it if it's visible, showing it if it is hidden). If there are multiple links with the same link text, all of them will be toggled.
+
+---
+
+- **the `A.menu.links.remove(text)` method**
+
+- Arguments: 
+    -`text`: the text of the link you want to alter.
+
+- Returns: nothing.
+
+This method removes a story menu link. If there are multiple links with the same link text, all of them will be removed. Hidden links can be re-shown later, removed links are gone for good and will need to be recreated via `A.menu.links.add()`.
+
+---
 
 # Detailed Examples
 

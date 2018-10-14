@@ -4,7 +4,7 @@ This version marks the first non-beta release version! Don't fear using this in 
 
 - Fixed preloading bugs on mobile.
 - Cleaned up sidebar controls UI.
-- Created API for accessing and editing the UI from user code.
+- Created API for accessing and editing the UI from user code; see the docs for the `A.menu` APIs.
 - Fixed mobile UI scaling in the demo, but unfortunately it can't be fixed from within the library.
 - Internal improvements.
 

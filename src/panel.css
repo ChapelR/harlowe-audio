@@ -92,9 +92,16 @@ div#story-menu {
 tw-link.story-menu {
   width: 100%;
   display: block;
-  background: #eee;
+  font-weight: normal;
+  background: #ccc;
+  font-size: 0.9em;
+  padding: 0.1em 0;
   color: #111;
   border: 1px solid #333;
+}
+
+tw-link.story-menu.hide {
+  display: none;
 }
 
 tw-link.story-menu:hover {

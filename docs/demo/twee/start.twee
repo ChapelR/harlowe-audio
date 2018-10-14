@@ -12,6 +12,20 @@
     A.preload();
 </script>
 
+:: story-menu [startup]
+<script>
+    A.menu.links.add('Navigate', 'other passage');
+    A.menu.links.add('Alert', function () {
+        alert('This is an alert.');
+    });
+    A.menu.links.add('Both', 'other passage', function () {
+        alert('This is an alert.');
+    });
+    A.menu.links.add('Removes self.', function () {
+        A.menu.links.remove('Removes self.');
+    });
+</script>
+
 :: Start
 <script>A.playlist('bgm').random().loop(true).playWhenPossible();</script>\
 Welcome to the Harlowe Audio Library demo!
@@ -79,3 +93,8 @@ Tests:
     </script>
 ]
 }
+
+:: other passage
+This is another passage!
+
+[[Go back.|Start]]
