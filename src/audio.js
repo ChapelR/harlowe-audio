@@ -494,8 +494,8 @@
             return this;
         },
         fadeTo : function (duration, level) {
+            var self = this;
             duration = duration || 1;
-            var vol = this.getVolume();
             level = Number(level);
             if (!Number.isNaN(level)) {
                 if (level > 1) {
@@ -503,9 +503,12 @@
                 } else if (level < 0) {
                     level = 0;
                 }
+            } else {
+                alert('ivalid volume level');
+                return;
             }
-            this.volume(0);
-            this.$el.animate({ volume: target * Audio.master.volume }, duration * 1000, function () {
+            this.$el.animate({ volume: level * Audio.master.volume }, duration * 1000, function () {
+                self.volume(level);
                 Track.emit(':volume', self);
                 Track.emit(':fade', self);
             });

@@ -1,3 +1,7 @@
+## v1.1.1
+
+This patch addresses a bug in the *track#fadeTo()* method.
+
 ## v1.1.0
 
 This version marks the first non-beta release version! Don't fear using this in production code anymore (or anymore than normal).
