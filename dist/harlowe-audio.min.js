@@ -8,7 +8,7 @@
     var options = {
         preload : true,
         loadDelay : 0,
-        muteOnBlur : false,
+        muteOnBlur : true,
         startingVol : 0.5,
         storagekey : '%%tw-audio',
         persistPrefs : true,
