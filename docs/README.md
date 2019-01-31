@@ -702,6 +702,8 @@ Returns true if the playlist is currently being played in some fashion.
 
 ## Control Panel
 
+?> **Note:** These APIs are completely unavailable if `options.controls.show` is `false`.
+
 The control panel is a user interface for controlling the audio that is set up through this library. You can use it to give your players a mute button and a volume control without having to build these functions yourself.
 
 You may wish to alter the panels CSS to math your game. [Look here](https://github.com/ChapelR/harlowe-audio/blob/master/src/panel.css) to check out it's default styles.
@@ -756,7 +758,9 @@ This library adds a loading screen to Harlowe that is superficially similar to S
 
 ## The Menu API
 
-> TODO: Add this to the API section. Improve this aspect of the demo. Write code examples.
+?> **Note:** These APIs are completely unavailable if `options.controls.show` is `false`.
+
+?> **TODO:** Add this to the API section. Improve this aspect of the demo. Write code examples.
 
 This API allows you to add links to the sidebar as a 'story menu', similar to what can be done in SugarCube. THese links can be used to navigate to a passage, run a JavaScript function, or both. They can be hidden, shown, toggled, and removed at any time.
 
@@ -858,6 +862,43 @@ This method toggles the visibility a story menu link (hiding it if it's visible,
 This method removes a story menu link. If there are multiple links with the same link text, all of them will be removed. Hidden links can be re-shown later, removed links are gone for good and will need to be recreated via `A.menu.links.add()`.
 
 ---
+
+# Events
+
+There are two kinds of events that are triggered by HAL--events triggered on the document *only* and events triggered on *both* the track element and the document.
+
+## Event Handlers
+
+It is recommended that you write events using [jQuery's `on()`](http://api.jquery.com/on/) or [`one()` methods](http://api.jquery.com/one/). For example:
+
+```javascript
+$(document).on(':volume', function (ev) {
+    console.log('track "' + ev.track.$el.attr('data-track') + '"" volume changed');
+});
+```
+
+```javascript
+A.track('some-song').$el.one(':volume', function () {
+    console.log('track "some-song" volume changed');
+});
+```
+
+## List of Track Events
+
+These events are triggered on both the document and the track element. The track's definition is available as `<event>.track`.
+
+- `:available` -> a track's metadata is loaded  
+- `:loaded` -> a track can be played from start to finish  
+- `:play` -> a track starts playing  
+- `:pause` -> a track is paused  
+- `:stop` -> a track reaches the end or is stopped  
+- `:mute` -> a track is muted or unmuted  
+- `:volume` -> a track's volume is changed
+
+## Other Events
+
+- `:master-mute` -> the master mute control is muted or unmuted  
+- `:master-volume` -> the master volume is changed
 
 # Detailed Examples
 

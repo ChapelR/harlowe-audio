@@ -10,6 +10,8 @@
     });
 
     Chapel.Audio.classes.Track.renew();
-    Chapel.Audio.controls.updateVolume();
+    if (Chapel.Audio.controls) {
+        Chapel.Audio.controls.updateVolume();
+    }
 
 }());

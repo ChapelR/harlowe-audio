@@ -1,3 +1,9 @@
+## v1.1.2
+
+This patch addresses an issue where `options.controls.show` was throwing on false.
+
+The custom events emitted by HAL are now (somewhat) documented.
+
 ## v1.1.1
 
 This patch addresses a bug in the *track#fadeTo()* method.

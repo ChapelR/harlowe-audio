@@ -3,111 +3,114 @@
 
     // userland sidebar editing
 
-    var _engine = Engine;
+    if (options.controls.show) {
 
-    var $user = Chapel.Audio.controls.$user;
+        var _engine = Engine;
 
-    function checkDisp () {
-        // return true if user sidebar is displayed
-        return $user.css('display') !== 'none';
-    }
+        var $user = Chapel.Audio.controls.$user;
 
-    function showUserMenu () {
-        if (!checkDisp()) {
-            $user.css('display', 'block');
-        }
-        return $user;
-    }
+        var checkDisp = function () {
+            // return true if user sidebar is displayed
+            return $user.css('display') !== 'none';
+        };
 
-    function hideUserMenu () {
-        if (checkDisp()) {
-            $user.css('display', 'none');
-        }
-        return $user;
-    }
-
-    function addLinks (text, psg, cb) {
-        // add tw-link elements to the userland sidebar area
-        var passage, callback;
-
-        if (!text || typeof text !== 'string') {
-            var msg = 'Cannot add a link with the text "' + (text === undefined) ? 'undefined' : JSON.stringify(text) + '".';
-            alert(msg);
-            console.error(msg);
-            return;
-        }
-
-        if (!cb && typeof psg === 'function') {
-            callback = psg;
-            passage = null;
-        } else {
-            if (psg && typeof psg === 'string') {
-                passage = psg;
+        var showUserMenu = function () {
+            if (!checkDisp()) {
+                $user.css('display', 'block');
             }
-            if (cb && typeof cb === 'function') {
-                callback = cb;
+            return $user;
+        };
+
+        var hideUserMenu = function () {
+            if (checkDisp()) {
+                $user.css('display', 'none');
             }
-        }
+            return $user;
+        };
 
-        var $link = $(document.createElement('tw-link'))
-            .append(text)
-            .attr({ 
-                tabindex : '0',
-                name : text.toLowerCase().trim()
-            })
-            .on('click', function () {
-                if (passage) {
-                    _engine.goToPassage(passage);
+        var addLinks = function (text, psg, cb) {
+            // add tw-link elements to the userland sidebar area
+            var passage, callback;
+
+            if (!text || typeof text !== 'string') {
+                var msg = 'Cannot add a link with the text "' + (text === undefined) ? 'undefined' : JSON.stringify(text) + '".';
+                alert(msg);
+                console.error(msg);
+                return;
+            }
+
+            if (!cb && typeof psg === 'function') {
+                callback = psg;
+                passage = null;
+            } else {
+                if (psg && typeof psg === 'string') {
+                    passage = psg;
                 }
-                if (callback) {
-                    callback();
+                if (cb && typeof cb === 'function') {
+                    callback = cb;
                 }
-            })
-            .addClass('story-menu')
-            .appendTo($user);
+            }
 
-        showUserMenu();
+            var $link = $(document.createElement('tw-link'))
+                .append(text)
+                .attr({ 
+                    tabindex : '0',
+                    name : text.toLowerCase().trim()
+                })
+                .on('click', function () {
+                    if (passage) {
+                        _engine.goToPassage(passage);
+                    }
+                    if (callback) {
+                        callback();
+                    }
+                })
+                .addClass('story-menu')
+                .appendTo($user);
 
-        return $link;
+            showUserMenu();
+
+            return $link;
+        };
+
+        var clearLinks = function () {
+            $user.empty();
+            return hideUserMenu();
+        };
+
+        var hideLink = function (text) {
+            text = text.toLowerCase().trim();
+            $('tw-link.story-menu[name="' + text + '"]').addClass('hide');
+        };
+
+        var showLink = function (text) {
+            text = text.toLowerCase().trim();
+            $('tw-link.story-menu[name="' + text + '"]').removeClass('hide');
+        };
+
+        var toggleLink = function (text) {
+            text = text.toLowerCase().trim();
+            $('tw-link.story-menu[name="' + text + '"]').toggleClass('hide');
+        };
+
+        var deleteLink = function (text) {
+            text = text.toLowerCase().trim();
+            $('tw-link.story-menu[name="' + text + '"]').remove();
+        };
+
+        Chapel.Audio.menu = {
+            hide : hideUserMenu,
+            show : showUserMenu,
+            isShown : checkDisp,
+            links : {
+                add : addLinks,
+                clear : clearLinks,
+                hide : hideLink,
+                show : showLink,
+                toggle : toggleLink,
+                remove : deleteLink
+            }
+        };
     }
-
-    function clearLinks () {
-        $user.empty();
-        return hideUserMenu();
-    }
-
-    function hideLink (text) {
-        text = text.toLowerCase().trim();
-        $('tw-link.story-menu[name="' + text + '"]').addClass('hide');
-    }
-
-    function showLink (text) {
-        text = text.toLowerCase().trim();
-        $('tw-link.story-menu[name="' + text + '"]').removeClass('hide');
-    }
-
-    function toggleLink (text) {
-        text = text.toLowerCase().trim();
-        $('tw-link.story-menu[name="' + text + '"]').toggleClass('hide');
-    }
-
-    function deleteLink (text) {
-        text = text.toLowerCase().trim();
-        $('tw-link.story-menu[name="' + text + '"]').remove();
-    }
-
-    Chapel.Audio.menu = {
-        hide : hideUserMenu,
-        show : showUserMenu,
-        isShown : checkDisp,
-        links : {
-            add : addLinks,
-            clear : clearLinks,
-            hide : hideLink,
-            show : showLink,
-            toggle : toggleLink,
-            remove : deleteLink
-        }
-    };
 
 }());
