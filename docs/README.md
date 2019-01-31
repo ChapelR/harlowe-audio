@@ -900,6 +900,8 @@ These events are triggered on both the document and the track element. The track
 - `:master-mute` -> the master mute control is muted or unmuted  
 - `:master-volume` -> the master volume is changed
 
+---
+
 # Detailed Examples
 
 Some more detailed examples and explanations of common use-cases.
