@@ -134,6 +134,21 @@
         }
     };
 
+    var validEvents = {
+        track : [
+            ':available', 
+            ':loaded', 
+            ':play',
+            ':stop',
+            ':mute',
+            ':volume'
+        ],
+        master : [
+            ':master-mute',
+            ':master-volume'
+        ]
+    };
+
     /** 
       * stolen from sugarCube's simpleaudio.js, by Thomas Michael Edwards
       * https://bitbucket.org/tmedwards/sugarcube/src/ab043c3d6dcdc69c208285272e4632c376f7e80d/src/lib/simpleaudio.js
@@ -526,22 +541,85 @@
             setTimeout( function () {
                 cb.call(self, self, duration);
             }, duration);
+        },
+        on : function (type, cb) {
+            if (!cb || typeof cb !== 'function') {
+                console.error('<track>.on() -> invalid callback');
+                return this;
+            }
+            type = type.trim().toLowerCase();
+            if (type[0] !== ':') {
+                type = ':' + type;
+            }
+            if (!validEvents.track.includes(type)) {
+                console.error('<track>.on() -> invalid event type');
+                return this;
+            }
+            this.$el.on(type, cb);
+        },
+        one : function () {
+            if (!cb || typeof cb !== 'function') {
+                console.error('<track>.one() -> invalid callback');
+                return this;
+            }
+            type = type.trim().toLowerCase();
+            if (type[0] !== ':') {
+                type = ':' + type;
+            }
+            if (!validEvents.track.includes(type)) {
+                console.error('<track>.one() -> invalid event type');
+                return this;
+            }
+            this.$el.one(type, cb);
         }
     };
 
-    $(document).on(':master-mute', Track.renew);
-    $(document).on(':master-volume', Track.renew);
+    var validMaster = validEvents.track.concat(validEvents.master);
+
+    Audio.on = function (type, cb) {
+        if (!cb || typeof cb !== 'function') {
+            console.error('Chapel.Audio.on() -> invalid callback');
+            return;
+        }
+        type = type.trim().toLowerCase();
+        if (type[0] !== ':') {
+            type = ':' + type;
+        }
+        if (!validMaster.includes(type)) {
+            console.error('Chapel.Audio.on() -> invalid event type');
+            return;
+        }
+        $(document).on(type, cb);
+    };
+    Audio.one = function (type, cb) {
+        if (!cb || typeof cb !== 'function') {
+            console.error('Chapel.Audio.one() -> invalid callback');
+            return;
+        }
+        type = type.trim().toLowerCase();
+        if (type[0] !== ':') {
+            type = ':' + type;
+        }
+        if (!validMaster.includes(type)) {
+            console.error('Chapel.Audio.one() -> invalid event type');
+            return;
+        }
+        $(document).one(type, cb);
+    };
+
+    Audio.on(':master-mute', Track.renew);
+    Audio.on(':master-volume', Track.renew);
 
     if (options.persistPrefs) {
-        $(document).on(':master-mute', Audio.savePrefs);
-        $(document).on(':master-volume', Audio.savePrefs);
+        Audio.on(':master-mute', Audio.savePrefs);
+        Audio.on(':master-volume', Audio.savePrefs);
     }
 
-    $(document).on(':play', function (ev) {
+    Audio.on(':play', function (ev) {
         ev.track.addToGroup('playing');
     });
 
-    $(document).on(':stop', function (ev) {
+    Audio.on(':stop', function (ev) {
         ev.track.removeFromGroup('playing');
     });
 

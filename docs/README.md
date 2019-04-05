@@ -423,6 +423,30 @@ Returns the track's current volume; this is the track's volume state and does no
 
 ---
 
+- **the `<track>.on(type, callback)` method**
+
+- Arguments:  
+  - `type`: a valid event type  
+  - `callback`: a function to run as a handler for the indicated event
+
+- Returns: none.
+
+Sets up a recurring event handler. Read more [here](#events).
+
+---
+
+- **the `<track>.one(type, callback)` method**
+
+- Arguments:  
+  - `type`: a valid event type  
+  - `callback`: a function to run as a handler for the indicated event
+
+- Returns: none.
+
+Sets up a single-use event handler. Read more [here](#events).
+
+---
+
 ## Master Audio Methods
 
 The master audio methods are used for controlling *all* sound in the game at once. The master audio does not change you tracks, instead it overrides them. For example, if you have the `'theme'` track muted and the `'beep'` track unmuted, `A.mute(true)` will make `'beep'` silent. `A.mute(false)` will not make `'theme'` audible, however. None of these methods are chainable.
@@ -508,6 +532,30 @@ Clears any user preferences that are saved in local storage.
 - Returns: none.
 
 Shows a loading screen while all previously defined tracks are cached by the browser. Can be used to completely or selectively preload audio before the game starts.
+
+---
+
+- **the `A.on(type, callback)` method**
+
+- Arguments:  
+  - `type`: a valid event type  
+  - `callback`: a function to run as a handler for the indicated event
+
+- Returns: none.
+
+Sets up a recurring event handler. Read more [here](#events).
+
+---
+
+- **the `A.one(type, callback)` method**
+
+- Arguments:  
+  - `type`: a valid event type  
+  - `callback`: a function to run as a handler for the indicated event
+
+- Returns: none.
+
+Sets up a single-use event handler. Read more [here](#events).
 
 ---
 
@@ -867,38 +915,77 @@ This method removes a story menu link. If there are multiple links with the same
 
 There are two kinds of events that are triggered by HAL--events triggered on the document *only* and events triggered on *both* the track element and the document.
 
-## Event Handlers
+## Track Event Methods
 
-It is recommended that you write events using [jQuery's `on()`](http://api.jquery.com/on/) or [`one()` methods](http://api.jquery.com/one/). For example:
+There are two track event methods you can use; `<track>.on()` and `<track>.one()`. The former triggers a handler each time the indicated event occurs, the latter triggers a handler only once. These methods can only be used with [track events](#list-of-track-events).
 
 ```javascript
-$(document).on(':volume', function (ev) {
-    console.log('track "' + ev.track.$el.attr('data-track') + '"" volume changed');
+A.track('some-song').one(':volume', function () {
+    // occurs only once when the volume of "some-song" is changed
+    console.log('track "some-song" volume changed');
 });
 ```
 
 ```javascript
-A.track('some-song').$el.one(':volume', function () {
+A.track('some-song').on(':volume', function () {
+    // occurs each time the volume of "some-song" is changed
     console.log('track "some-song" volume changed');
+});
+```
+
+## Global Event Methods
+
+As with track event methods, there are two: `A.on()` and `A.one()`. These event methods monitor *all* tracks for events, and also monitor for [master audio events](#list-of-master-audio-events).
+
+```javascript
+A.one(':volume', function (ev) {
+    // occurs only once when the volume of a track is changed
+    console.log('track "' + ev.track.id + '" volume changed');
+});
+```
+
+```javascript
+A.on(':volume', function (ev) {
+    // occurs each time the volume of any track is changed
+    console.log('track "' + ev.track.id + '" volume changed');
 });
 ```
 
 ## List of Track Events
 
-These events are triggered on both the document and the track element. The track's definition is available as `<event>.track`.
+These events are triggered on both the document and the track element. The track's definition is available as `<event>.track`. These events may be used with `<track>.on()` and `<track>.one()` to listen for events on specific tracks, or with `A.on()` and `A.one()` to listen for events on any and all tracks.
 
-- `:available` -> a track's metadata is loaded  
-- `:loaded` -> a track can be played from start to finish  
-- `:play` -> a track starts playing  
-- `:pause` -> a track is paused  
-- `:stop` -> a track reaches the end or is stopped  
-- `:mute` -> a track is muted or unmuted  
-- `:volume` -> a track's volume is changed
+| Event        | Description                                |
+| ---          | ---                                        |
+| `:available` | a track's metadata is loaded               |
+| `:loaded`    | a track can be played from start to finish |
+| `:play`      | a track starts playing                     |
+| `:pause`     | a track is paused                          |
+| `:stop`      | a track reaches the end or is stopped      |
+| `:mute`      | a track is muted or unmuted                |
+| `:volume`    | a track's volume is changed                |
 
-## Other Events
+## List of Master Audio Events
 
-- `:master-mute` -> the master mute control is muted or unmuted  
-- `:master-volume` -> the master volume is changed
+These events are only available for use with `A.on()` and `A.one()`, and are only triggered on the document element.
+
+| Event            | Description                                 |
+| ---              | ---                                         |
+| `:master-mute`   | the master mute control is muted or unmuted |
+| `:master-volume` | the master volume is changed                |
+
+## The Event Object
+
+The event object in track events contains the `track` property, which contains the definition of the track that triggered the event.
+
+| Property                | Description                                  |
+| ---                     | ---                                          |
+| `<event>.track.id`      | The track's name/id.                         |
+| `<event>.track.$el`     | The track's jQuery-wrapped audio element.    |
+| `<event>.track.unwrap`  | The track's `<audio>` element object.        |
+| `<event>.track.sources` | The track's sources; a string array of URLs. |
+
+You can run any valid track methods directly on the track in the event object as well, e.g. `<event>.track.getVolume()`.
 
 ---
 

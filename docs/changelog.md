@@ -1,3 +1,12 @@
+## v1.2.0
+
+This version adds event handler methods to the `track` prototype and to the root `A` object.
+
+- Added the `track#on()` and `track#one()` methods.
+- Added the `A.on()` and `A.one()` methods.
+- Updated the docs with the new event methods and an event section.
+- Internal improvements.
+
 ## v1.1.2
 
 This patch addresses an issue where `options.controls.show` was throwing on false.
