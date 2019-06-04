@@ -63,4 +63,4 @@ typings/
 **.sublime-*
 *.bat
 **.zip
-test
+test/
