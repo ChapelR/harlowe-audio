@@ -4,6 +4,9 @@
 
 [Complete API Reference](./API.md)
 
+> [!WARNING]
+> If you're using **Harlowe v3.x (or later)**, some updates to the way the engine preserves state via reloads may cause parts of this library to stop functioning correctly when used outside of the Story JavaScript or equivalent; particularly things that need initialized. There is not much I can do to fix this on my end--for now, it's recommended that you define all your tracks and menu links in Story JavaScript, not in `startup`-tagged passages. All other commands, like playing or stopping audio, should continue to work as expected.
+
 If you just need some audio and don't need anything too complex, start at [Installation](#installation) and then read some of the [examples](#detailed-examples) to see if what you want to do is covered. If you want anything more complex than that, or if you have grand, complex ideas, you'll need to read the whole thing.
 
 ## Introduction
@@ -28,7 +31,8 @@ The best place to ask for help if the issue is on your end is [the Twine Q&A](ht
 
 **Donate**
 
-Note: I suggest donating to [Twine development](https://www.patreon.com/klembot) if you really want to help out, but I'd welcome a few dollars if you feel like it.
+> [!NOTE]
+> I suggest donating to [Twine development](https://www.patreon.com/klembot) if you really want to help out, but I'd welcome a few dollars if you feel like it.
 
 [![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/F1F8IC35)
 
@@ -180,7 +184,7 @@ Use this option to set a tolerance (in MS) for how long the preloading function 
 
 ## Tracks
 
-Tracks are the meat and potatoes of this library: everything you do is with tracks. Setting up your tracks should be done early, and you have a few options: use [a `startup`-tagged passage](https://twine2.neocities.org/#passagetag_startup) and `<script>` elements, or write the track definitions in JavaScript (but after the library).
+Tracks are the meat and potatoes of this library: everything you do is with tracks. Setting up your tracks should be done early, and you have a few options: ~~use [a `startup`-tagged passage](https://twine2.neocities.org/#passagetag_startup) and `<script>` elements~~, or write the track definitions in JavaScript (but after the library).
 
 To setup a track, use the `A.newTrack()` method, and provide your track a name and at least one source.  For example:
 
@@ -188,7 +192,7 @@ To setup a track, use the `A.newTrack()` method, and provide your track a name a
 A.newTrack('piano', 'http://www.kozco.com/tech/piano2.wav');
 ```
 
-You can also use a script element in a `startup`-tagged passage:
+~~You can also use a script element in a `startup`-tagged passage:~~ (See warning below.)
 ```
 :: audio-init [startup]
 <script>
@@ -196,6 +200,9 @@ A.newTrack('theme', 'audio/theme.mp3');
 A.newTrack('beep', 'audio/beep.mp3');
 </script>
 ```
+
+> [!DANGER]
+> In Harlowe v3.x, you should **always** define your tracks in your Story JavaScript, or your compiler's equivalent script section.
 
 The *sources* of your audio files are urls or paths to the audio resources. These can be relative paths or absolute paths, depending on your needs.
 
@@ -226,6 +233,9 @@ A.preload(); // shows a load screen and dismisses it when the audio has loaded
 </script>
 ```
 
+> [!DANGER]
+> In Harlowe v3.x, you should **always** define your tracks in your Story JavaScript, or your compiler's equivalent script section.
+
 Once you have some tracks set up and named, you're ready to do things with them!
 
 ## Track Methods
@@ -239,7 +249,8 @@ You can use `A.track()` to access your track, and then use methods like `fadeIn(
 ]
 ```
 
-Note that most browsers will not play any sound before the user interacts with the page. Once sound plays once, however, you can play sounds without worrying about it, so a setup like the one above is generally wise when you're playing the first sound in your game. There are a few methods that can sneak around this, though, with varying degrees of success.
+> [!TIP]
+> Most browsers will not play any sound before the user interacts with the page. Once sound plays once, however, you can play sounds without worrying about it, so a setup like the one above is generally wise when you're playing the first sound in your game. There are a few methods that can sneak around this, though, with varying degrees of success.
 
 You'll also notice that we called two methods in a row: `loop()` and `play()`. This is called *method chaining*. You can't chain every method together, but the ones you can chain will be clearly marked.
 
@@ -456,7 +467,7 @@ The master audio methods are used for controlling *all* sound in the game at onc
 - **the `A.mute(bool)` method**
 
 - Arguments:  
-    -`bool`: (boolen) if `true`, mutes all audio; if `false`, unmutes all audio.
+    - `bool`: (boolen) if `true`, mutes all audio; if `false`, unmutes all audio.
 
 - Returns: none.
 
@@ -467,7 +478,7 @@ Controls the master mute and unmute state.
 - **the `A.volume(level)` method**
 
 - Arguments:  
-    -`level`: (number) a volume level between `0` and `1`.
+    - `level`: (number) a volume level between `0` and `1`.
 
 - Returns: none.
 
@@ -620,7 +631,7 @@ Stops all the sounds in the group.
 - **the `<group>.mute(bool)` method**
 
 - Arguments:  
-    -`bool`: (boolen) if `true`, mutes the tracks; if `false`, unmutes them.
+    - `bool`: (boolen) if `true`, mutes the tracks; if `false`, unmutes them.
 
 - Returns: the group (chainable).
 
@@ -631,7 +642,7 @@ Mutes or unmutes every track in the group.
 - **the `<group>.volume(level)` method**
 
 - Arguments:  
-    -`level`: (number) a volume level between `0` and `1`.
+    - `level`: (number) a volume level between `0` and `1`.
 
 - Returns: the group (chainable).
 
@@ -642,7 +653,7 @@ Adjusts all the volumes of all the tracks in the group.
 - **the `<group>.loop(bool)` method**
 
 - Arguments:  
-    -`bool`: (boolean) if `true`, sets all the tracks to loop; if `false`, stops them from looping.
+    - `bool`: (boolean) if `true`, sets all the tracks to loop; if `false`, stops them from looping.
 
 - Returns: the group (chainable).
 
@@ -750,7 +761,8 @@ Returns true if the playlist is currently being played in some fashion.
 
 ## Control Panel
 
-?> **Note:** These APIs are completely unavailable if `options.controls.show` is `false`.
+> [!TIP]
+> These APIs are completely unavailable if `options.controls.show` is `false`.
 
 The control panel is a user interface for controlling the audio that is set up through this library. You can use it to give your players a mute button and a volume control without having to build these functions yourself.
 
@@ -806,9 +818,13 @@ This library adds a loading screen to Harlowe that is superficially similar to S
 
 ## The Menu API
 
-?> **Note:** These APIs are completely unavailable if `options.controls.show` is `false`.
+> [!TIP]
+> These APIs are completely unavailable if `options.controls.show` is `false`.
 
 ?> **TODO:** Add this to the API section. Improve this aspect of the demo. Write code examples.
+
+> [!DANGER]
+> In Harlowe v3.x, you should **always** define your menu links Story JavaScript, or your compiler's equivalent script section.
 
 This API allows you to add links to the sidebar as a 'story menu', similar to what can be done in SugarCube. THese links can be used to navigate to a passage, run a JavaScript function, or both. They can be hidden, shown, toggled, and removed at any time.
 
@@ -870,7 +886,7 @@ This method removes all of the links from the story menu.
 - **the `A.menu.links.hide(text)` method**
 
 - Arguments: 
-    -`text`: the text of the link you want to alter.
+    - `text`: the text of the link you want to alter.
 
 - Returns: nothing.
 
@@ -881,7 +897,7 @@ This method hides a story menu link. If there are multiple links with the same l
 - **the `A.menu.links.show(text)` method**
 
 - Arguments: 
-    -`text`: the text of the link you want to alter.
+    - `text`: the text of the link you want to alter.
 
 - Returns: nothing.
 
@@ -892,7 +908,7 @@ This method shows a hidden story menu link. If there are multiple links with the
 - **the `A.menu.links.toggle(text)` method**
 
 - Arguments: 
-    -`text`: the text of the link you want to alter.
+    - `text`: the text of the link you want to alter.
 
 - Returns: nothing.
 
@@ -903,7 +919,7 @@ This method toggles the visibility a story menu link (hiding it if it's visible,
 - **the `A.menu.links.remove(text)` method**
 
 - Arguments: 
-    -`text`: the text of the link you want to alter.
+    - `text`: the text of the link you want to alter.
 
 - Returns: nothing.
 
@@ -1105,12 +1121,16 @@ Then:
 
 ## Looping Background Music
 
-The `<track>.loop()` method can be used to make music loop. If all you're after is a a backing track, this is all you need. Just place it in your JavaScript (after the library) or in a `<script>` in a `startup`-tagged passage element:
+The `<track>.loop()` method can be used to make music loop. If all you're after is a a backing track, this is all you need. Just place it in your JavaScript (after the library) ~~or in a `<script>` in a `startup`-tagged passage element~~:
 
 ```javascript
-A.newTrack('theme', 'url/to-you-track.mp3')
+A.newTrack('theme', 'url/to-you-track.mp3');
 A.track('theme').loop(true).playWhenPossible();
 ```
+
+> [!DANGER]
+> In Harlowe v3.x, you should **always** define your tracks in your Story JavaScript, or your compiler's equivalent script section.
+
 
 That's it; you're done.
 
@@ -1149,7 +1169,7 @@ You can also use the *top-secret* `<track>.delay()` method if you're comfortable
 
 ```javascript
 A.track('cool-song').fadeOut(2);
-A.track('theme').delay(2000, function () { this.fadeIn(2) });
+A.track('theme').delay(2000, function () { this.fadeIn(2); });
 ```
 
 ## Playing a Random Sound
@@ -1224,6 +1244,7 @@ There are a few things to know and avoid when using JavaScript in Harlowe.
 (print: A.track('piano').isPlaying())
 <script>A.track('piano').loop(true).playWhenPossible();</script>
 ```
+
 You would probably expect the `(print:)` there to print `false`; instead, it will throw an error (`cannot read property isPlaying of undefined`) because our script is processed late.
 
 You can abuse the set macro, however to run code in order:
@@ -1237,6 +1258,9 @@ You can abuse the set macro, however to run code in order:
 (print: A.track('piano').isPlaying())
 <script>A.track('piano').loop(true).playWhenPossible();</script>
 ```
+
+> [!DANGER]
+> In Harlowe v3.x, you should **always** define your tracks in your Story JavaScript, or your compiler's equivalent script section.
 
 The `(set:)` will force the function to be evaluated in order, and the `(print:)` will print `false` as expected. However, this is a hack, and may not be possible in future versions of Harlowe.
 
