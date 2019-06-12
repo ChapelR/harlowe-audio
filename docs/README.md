@@ -21,7 +21,7 @@ Howler-for-Harlowe will continue to exist, but I don't intend to fix it other th
 
 **What Else Should I Know?**
 
-This library uses the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_Web_Audio_API) and [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises). That means Internet Explorer is out (I'm not sure if Harlowe actually supports IE). Other than that, all major modern browsers should work fine, though the volume control may look odd in certain browsers.
+This library uses the [HTMLMediaElement API](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement) and [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises). That means Internet Explorer is out (I'm not sure if Harlowe actually supports IE). Other than that, all major modern browsers should work fine, though the volume control may look odd in certain browsers.
 
 This library is free and dedicated to the public domain. That means you don't need to provide credit or attribution if you don't want to, and you can do anything you like with the code. [Review the license](https://github.com/ChapelR/harlowe-audio/blob/master/LICENSE) for any questions or concerns about that.
 
