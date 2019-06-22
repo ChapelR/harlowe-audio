@@ -1,3 +1,7 @@
+## v1.3.0
+
+This version of HAL should address most issues related to Harlowe v3's refresh/reload persistence for tracks. The Menu API calls still need to be set up in Story JavaScript; there's simply too much that can go wrong there.
+
 ## v1.2.0
 
 This version adds event handler methods to the `track` prototype and to the root `A` object.

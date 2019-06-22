@@ -1,6 +1,6 @@
 {
   "name": "harlowe-audio",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "Audio library for Twine2/Harlowe2.",
   "main": "gulpfile.js",
   "directories": {

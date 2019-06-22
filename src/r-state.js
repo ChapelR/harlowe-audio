@@ -4,7 +4,7 @@
     // save the state to reload it on restarts...
     // load script just before setup.js
 
-    var _key = '{ifid}_hal_restart_'; // need to get the story IFID for this
+    var _key = options.storagekey + '_hal_restart_';
     var _store = function () {
         if (window.sessionStorage) {
             save = function (key, data) {
@@ -62,11 +62,10 @@
         }
     }
 
-    $(document).one('unload', function () {
-        // save tracks to session storage
-        saveTracks();
-    });
+    window.Chapel.Audio.state = {
+        _store : _store,
+        saveTracks : saveTracks,
+        loadTracks : loadTracks
+    };
 
-    // reload any tracks in session storage on start-up
-    loadTracks();
 }());

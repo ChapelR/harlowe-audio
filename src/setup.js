@@ -14,4 +14,14 @@
         Chapel.Audio.controls.updateVolume();
     }
 
+    if (Chapel.Get.isHarlowe3OrLater) {
+        $(document).one('unload', function () {
+            // save tracks to session storage
+            Chapel.Audio.state.saveTracks();
+        });
+
+        // reload any tracks in session storage on start-up
+        Chapel.Audio.state.loadTracks();
+    }
+
 }());
