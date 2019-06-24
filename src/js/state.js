@@ -5,7 +5,8 @@
     // load script just before setup.js
 
     var _key = options.storagekey + '_hal_restart_';
-    var _store = function () {
+    var _store = (function () {
+        var save, load;
         if (window.sessionStorage) {
             save = function (key, data) {
                 window.sessionStorage.setItem(_key + 'key', data);
@@ -22,7 +23,7 @@
             save : save,
             load : load
         };
-    };
+    }());
 
     function saveTracks () {
         var data;

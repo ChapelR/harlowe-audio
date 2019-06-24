@@ -43,11 +43,30 @@ function rimraf () {
 
 // build functions
 function buildScripts () {
-    return processScripts('./src/*.js', './src/wrap', 'min.js');
+    var jsFiles = [
+        'get.js',
+        'audio.js',
+        'controlpanel.js',
+        'detect.js',
+        'preload.js',
+        'state.js',
+        'setup.js',
+        'userland.js',
+        'fixes.js'
+    ].map( function (file) {
+        return './src/js/' + file;
+    });
+    return processScripts(jsFiles, './src/wrap', 'min.js');
 }
 
 function buildStyles () {
-    return processStyles('./src/*.css', './dist', 'harlowe-audio.min.css');
+    var cssFiles = [
+        'overlay.css',
+        'panel.css'
+    ].map( function (file) {
+        return './src/css/' + file;
+    });
+    return processStyles(cssFiles, './dist', 'harlowe-audio.min.css');
 }
 
 // add js wrapper
