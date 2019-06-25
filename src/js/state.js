@@ -9,10 +9,10 @@
         var save, load;
         if (window.sessionStorage) {
             save = function (key, data) {
-                window.sessionStorage.setItem(_key + 'key', data);
+                window.sessionStorage.setItem(_key + key, data);
             };
             load = function (key) {
-                return window.sessionStorage.getItem(_key + 'key');
+                return window.sessionStorage.getItem(_key + key);
             };
         } else {
             save = function () { /* no op */ };
@@ -54,7 +54,7 @@
             if (Array.isArray(data) && data.length) {
                 data.forEach( function (def) {
                     if (def.id && def.sources && !Chapel.Audio.classes.Track.has(def.id)) {
-                        Chapel.Audio.newTrack(def.id, def.sources);
+                        Chapel.Audio.newTrack.apply(null, [def.id].concat(def.sources));
                     } else {
                         console.warn('Track reload failed...');
                     }
@@ -70,12 +70,13 @@
     function savePlaylists () {
         var data;
         try {
-            data = Chapel.Audio.classes.Playlist.list.map( function (pl) {
+            var plList = Chapel.Audio.classes.Playlist.list;
+            data = Object.keys(plList).map( function (pl) {
                 var obj = {};
-                obj.tracks = pl.tracks.map( function (tr) {
+                obj.tracks = plList[pl].tracks.map( function (tr) {
                     return tr.id;
                 });
-                obj.id = pl.id;
+                obj.id = plList[pl].id;
                 return obj;
             });
             data = JSON.stringify(data);

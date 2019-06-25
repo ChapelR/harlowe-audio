@@ -15,7 +15,7 @@
     }
 
     if (Chapel.Get.isHarlowe3OrLater) {
-        $(document).one('unload', function () {
+        $(window).on('unload', function () {
             // save tracks to session storage
             Chapel.Audio.state.saveTracks();
             Chapel.Audio.state.savePlaylists();
