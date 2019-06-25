@@ -64,3 +64,4 @@ typings/
 *.bat
 **.zip
 test/
+src/wrap/min.js
