@@ -18,10 +18,14 @@
         $(document).one('unload', function () {
             // save tracks to session storage
             Chapel.Audio.state.saveTracks();
+            Chapel.Audio.state.savePlaylists();
+            Chapel.Audio.state.saveGroups();
         });
 
         // reload any tracks in session storage on start-up
         Chapel.Audio.state.loadTracks();
+        Chapel.Audio.state.loadPlaylists();
+        Chapel.Audio.state.loadGroups();
     }
 
 }());

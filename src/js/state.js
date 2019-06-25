@@ -25,6 +25,8 @@
         };
     }());
 
+    // tracks
+
     function saveTracks () {
         var data;
         try {
@@ -63,10 +65,94 @@
         }
     }
 
+    // playlists
+
+    function savePlaylists () {
+        var data;
+        try {
+            data = Chapel.Audio.classes.Playlist.list.map( function (pl) {
+                var obj = {};
+                obj.tracks = pl.tracks.map( function (tr) {
+                    return tr.id;
+                });
+                obj.id = pl.id;
+                return obj;
+            });
+            data = JSON.stringify(data);
+            _store.save('playlists', data);
+        } catch (err) {
+            console.error(err.message);
+        }
+    }
+
+    function loadPlaylists () {
+        var data;
+        try {
+            data = _store.load('playlists');
+            if (data) {
+                data = JSON.parse(data);
+            }
+            if (data && Array.isArray(data) && data.length) {
+                data.forEach( function (def) {
+                    if (def.id && def.tracks) {
+                        Chapel.Audio.createPlaylist(def.id, def.tracks);
+                    }
+                });
+            }
+        } catch (err) {
+            console.error(err.message);
+        }
+    }
+
+    // custom groups
+
+    function saveGroups () {
+        var data;
+        try {
+            data = {};
+            Object.keys(Chapel.Audio.groups.custom).forEach( function (gr) {
+                data[gr] = Chapel.Audio.groups.custom[gr].map( function (tr) {
+                    if (typeof tr === 'string') {
+                        return tr;
+                    }
+                    return tr.id;
+                });
+            });
+            data = JSON.stringify(data);
+            _store.save('groups', data);
+        } catch (err) {
+            console.error(err.message);
+        }
+    }
+
+    function loadGroups () {
+        var data;
+        try {
+            data = _store.load('groups');
+            if (data) {
+                data = JSON.parse(data);
+            }
+            if (data && typeof data === 'object') {
+                Object.keys(data).forEach( function (gr) {
+                    data[gr].map( function (tr) {
+                        return Chapel.Audio.classes.Track.get(tr);
+                    });
+                });
+                Chapel.Audio.groups.custom = data;
+            }
+        } catch (err) {
+            console.error(err.message);
+        }
+    }
+
     window.Chapel.Audio.state = {
         _store : _store,
         saveTracks : saveTracks,
-        loadTracks : loadTracks
+        loadTracks : loadTracks,
+        savePlaylists : savePlaylists,
+        loadPlaylists : loadPlaylists,
+        saveGroups : saveGroups,
+        loadGroups : loadGroups
     };
 
 }());
