@@ -1228,3 +1228,129 @@ Dismisses the loading screen.
 Completely removes the loading screen from the DOM.
 
 ---
+
+## The Menu API
+
+---
+
+- **the `A.menu.hide()` method**
+
+- Arguments: none.
+
+- Returns: the `#story-menu` element (jQuery).
+
+Hides the story menu portion of the side bar.
+
+---
+
+- **the `A.menu.show()` method**
+
+- Arguments: none.
+
+- Returns: the `#story-menu` element (jQuery).
+
+Shows the story menu portion of the side bar.
+
+---
+
+- **the `A.menu.isShown()` method**
+
+- Arguments: none.
+
+- Returns: boolean.
+
+Returns whether the story menu portion of the side bar is currently visible.
+
+---
+
+- **the `A.menu.links.add(linkText, [passageName], [callback])` method**
+
+- Arguments: 
+    - `linkText`: (string) the text of the link.
+    - `passageName`: (optional) (string) a passage name to navigate to when the link is clicked.
+    - `callback`: (optional) (string) a function to run when the link is clicked.
+
+- Returns: the generated link (jQuery).
+
+This method creates a story menu link. You must pass it text to display or it will raise an error. You can then pass it a passage name to navigate to, a callback function to run on click, both, or neither. If you include both, they must be included in the indicated order.
+
+---
+
+- **the `A.menu.links.clear()` method**
+
+- Arguments: none.
+
+- Returns: the `#story-menu` element (jQuery).
+
+This method removes all of the links from the story menu.
+
+---
+
+- **the `A.menu.links.hide(text)` method**
+
+- Arguments: 
+    - `text`: the text of the link you want to alter.
+
+- Returns: nothing.
+
+This method hides a story menu link. If there are multiple links with the same link text, all of them will be hidden.
+
+---
+
+- **the `A.menu.links.show(text)` method**
+
+- Arguments: 
+    - `text`: the text of the link you want to alter.
+
+- Returns: nothing.
+
+This method shows a hidden story menu link. If there are multiple links with the same link text, all of them will be shown.
+
+---
+
+- **the `A.menu.links.toggle(text)` method**
+
+- Arguments: 
+    - `text`: the text of the link you want to alter.
+
+- Returns: nothing.
+
+This method toggles the visibility a story menu link (hiding it if it's visible, showing it if it is hidden). If there are multiple links with the same link text, all of them will be toggled.
+
+---
+
+- **the `A.menu.links.remove(text)` method**
+
+- Arguments: 
+    - `text`: the text of the link you want to alter.
+
+- Returns: nothing.
+
+This method removes a story menu link. If there are multiple links with the same link text, all of them will be removed. Hidden links can be re-shown later, removed links are gone for good and will need to be recreated via `A.menu.links.add()`.
+
+---
+
+# Events
+
+## List of Track Events
+
+| Event        | Description                                |
+| ---          | ---                                        |
+| `:available` | a track's metadata is loaded               |
+| `:loaded`    | a track can be played from start to finish |
+| `:play`      | a track starts playing                     |
+| `:pause`     | a track is paused                          |
+| `:stop`      | a track reaches the end or is stopped      |
+| `:mute`      | a track is muted or unmuted                |
+| `:volume`    | a track's volume is changed                |
+
+## List of Master Audio Events
+
+| Event            | Description                                 |
+| ---              | ---                                         |
+| `:master-mute`   | the master mute control is muted or unmuted |
+| `:master-volume` | the master volume is changed                |
+
+## Event Objects
+
+Track event objects are given a `track` property, which contains the track instance that triggered the event.

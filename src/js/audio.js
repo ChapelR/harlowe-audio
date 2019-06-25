@@ -557,7 +557,7 @@
             }
             this.$el.on(type, cb);
         },
-        one : function () {
+        one : function (type, cb) {
             if (!cb || typeof cb !== 'function') {
                 console.error('<track>.one() -> invalid callback');
                 return this;

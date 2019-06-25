@@ -5,7 +5,7 @@
 [Complete API Reference](./API.md)
 
 > [!WARNING]
-> If you're using **Harlowe v3.x (or later)**, some updates to the way the engine preserves state via reloads may cause parts of this library to stop functioning correctly when used outside of the Story JavaScript or equivalent; particularly things that need initialized. There is not much I can do to fix this on my end--for now, it's recommended that you define all your tracks and menu links in Story JavaScript, not in `startup`-tagged passages. All other commands, like playing or stopping audio, should continue to work as expected.
+> If you're using **Harlowe v3.x (or later)**, it is strongly recommended that you define tracks, groups, playlists, and menu links in your Story JavaScript area (or equivalent for your compiler) rather than in `startup`-tagged passages.
 
 If you just need some audio and don't need anything too complex, start at [Installation](#installation) and then read some of the [examples](#detailed-examples) to see if what you want to do is covered. If you want anything more complex than that, or if you have grand, complex ideas, you'll need to read the whole thing.
 
@@ -38,7 +38,7 @@ The best place to ask for help if the issue is on your end is [the Twine Q&A](ht
 
 ## Installation
 
-All you need to install this library is the code. There are two ways to get it: [copy and pasting from GitHub](https://github.com/ChapelR/harlowe-audio/tree/master/dist), or [via a Google Drive download](https://drive.google.com/file/d/1ThjHsBDzAwYNLc0p8g_V1fC-dLhBc8EH/view?usp=sharing). If you download the code, be sure to open it and mess with it in a text editor, *not* a word processor. Once you've got the code, you'll need to put in in your project.
+All you need to install this library is the code. Download the most recent version of HAL here, on the [releases page](https://github.com/ChapelR/harlowe-audio/releases). If you download the code, be sure to open it and mess with it in a text editor, *not* a word processor. Once you've got the code, you'll need to put in in your project.
 
 **In Twine 2 (online or standalone)**, copy and paste the code in `harlowe-audio.min.js` into your [Story JavaScript area](https://twinery.org/wiki/twine2:adding_custom_javascript_and_css), and the code in `harlowe-audio.min.css` into your Story Stylesheet area.
 
@@ -192,7 +192,7 @@ To setup a track, use the `A.newTrack()` method, and provide your track a name a
 A.newTrack('piano', 'http://www.kozco.com/tech/piano2.wav');
 ```
 
-~~You can also use a script element in a `startup`-tagged passage:~~ (See warning below.)
+You can also use a script element in a `startup`-tagged passage (though doing so in your Story JavaScript is still strongly recommended):
 ```
 :: audio-init [startup]
 <script>
@@ -200,9 +200,6 @@ A.newTrack('theme', 'audio/theme.mp3');
 A.newTrack('beep', 'audio/beep.mp3');
 </script>
 ```
-
-> [!DANGER]
-> In Harlowe v3.x, you should **always** define your tracks in your Story JavaScript, or your compiler's equivalent script section.
 
 The *sources* of your audio files are urls or paths to the audio resources. These can be relative paths or absolute paths, depending on your needs.
 
@@ -232,9 +229,6 @@ A.newTrack('beep', 'audio/beep.mp3');
 A.preload(); // shows a load screen and dismisses it when the audio has loaded
 </script>
 ```
-
-> [!DANGER]
-> In Harlowe v3.x, you should **always** define your tracks in your Story JavaScript, or your compiler's equivalent script section.
 
 Once you have some tracks set up and named, you're ready to do things with them!
 
@@ -821,10 +815,8 @@ This library adds a loading screen to Harlowe that is superficially similar to S
 > [!TIP]
 > These APIs are completely unavailable if `options.controls.show` is `false`.
 
-?> **TODO:** Add this to the API section. Improve this aspect of the demo. Write code examples.
-
 > [!DANGER]
-> In Harlowe v3.x, you should **always** define your menu links Story JavaScript, or your compiler's equivalent script section.
+> You should **always** define your menu links Story JavaScript, or your compiler's equivalent script section, never in passages.
 
 This API allows you to add links to the sidebar as a 'story menu', similar to what can be done in SugarCube. THese links can be used to navigate to a passage, run a JavaScript function, or both. They can be hidden, shown, toggled, and removed at any time.
 
@@ -1121,15 +1113,12 @@ Then:
 
 ## Looping Background Music
 
-The `<track>.loop()` method can be used to make music loop. If all you're after is a a backing track, this is all you need. Just place it in your JavaScript (after the library) ~~or in a `<script>` in a `startup`-tagged passage element~~:
+The `<track>.loop()` method can be used to make music loop. If all you're after is a a backing track, this is all you need. Just place it in your JavaScript (after the library):
 
 ```javascript
 A.newTrack('theme', 'url/to-you-track.mp3');
 A.track('theme').loop(true).playWhenPossible();
 ```
-
-> [!DANGER]
-> In Harlowe v3.x, you should **always** define your tracks in your Story JavaScript, or your compiler's equivalent script section.
 
 
 That's it; you're done.
@@ -1258,9 +1247,6 @@ You can abuse the set macro, however to run code in order:
 (print: A.track('piano').isPlaying())
 <script>A.track('piano').loop(true).playWhenPossible();</script>
 ```
-
-> [!DANGER]
-> In Harlowe v3.x, you should **always** define your tracks in your Story JavaScript, or your compiler's equivalent script section.
 
 The `(set:)` will force the function to be evaluated in order, and the `(print:)` will print `false` as expected. However, this is a hack, and may not be possible in future versions of Harlowe.
 

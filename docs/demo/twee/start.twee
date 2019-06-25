@@ -8,23 +8,22 @@
     A.createGroup('tests', 'beep', 'nope');
     A.createGroup('bgm', 'cibelle', 'que-pena');
     A.createPlaylist('bgm', 'cibelle', 'que-pena');
+    A.createPlaylist('test', 'beep', 'nope');
 
     A.preload();
 </script>
 
-:: story-menu [startup]
-<script>
-    A.menu.links.add('Navigate', 'other passage');
-    A.menu.links.add('Alert', function () {
-        alert('This is an alert.');
-    });
-    A.menu.links.add('Both', 'other passage', function () {
-        alert('This is an alert.');
-    });
-    A.menu.links.add('Removes self.', function () {
-        A.menu.links.remove('Removes self.');
-    });
-</script>
+:: story-menu [script]
+A.menu.links.add('Navigate', 'other passage');
+A.menu.links.add('Alert', function () {
+    alert('This is an alert.');
+});
+A.menu.links.add('Both', 'other passage', function () {
+    alert('This is an alert.');
+});
+A.menu.links.add('Removes self.', function () {
+    A.menu.links.remove('Removes self.');
+});
 
 :: Start
 <script>A.playlist('bgm').random().loop(true).playWhenPossible();</script>\
@@ -93,8 +92,31 @@ Tests:
     </script>
 ]
 }
+<!--
+[[stop test]]
+[[playlist test]]
+-->
 
 :: other passage
 This is another passage!
 
 [[Go back.|Start]]
+
+:: stop test
+<span id='counter-test'>0</span>
+(link-repeat: 'test')[
+    <script>
+        A.track('beep').play();
+        A.track('beep').one(':stop', function () {
+            var x = Number($('#counter-test').text())
+            $('#counter-test').empty().append(++x);
+        });
+    </script>
+]
+
+:: playlist test
+(link-repeat: 'test')[
+    <script>
+        A.playlist('test').loop(true).play();
+    </script>
+]

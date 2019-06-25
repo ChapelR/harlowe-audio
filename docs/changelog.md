@@ -1,3 +1,12 @@
+## v1.3.0
+
+This version of HAL should address most issues related to Harlowe v3's refresh/reload persistence for tracks, playlists, and groups. The Menu API calls still need to be set up in Story JavaScript; there's simply too much that can go wrong there.
+
+- Added session persistence for `track`, `playlist`, and `group` instances.
+- Fixed a bug with `track#one()`.
+- Updated documentation.
+- Other internal improvements and updates.
+
 ## v1.2.0
 
 This version adds event handler methods to the `track` prototype and to the root `A` object.
