@@ -37,4 +37,7 @@
         storyTitle : getStoryTitle(),
         IFID : getStoryIFID()
     };
+
+    // set storage key for this story with IFID + Story Title
+    options.storagekey = options.storagekey + '-' + Chapel.Get.IFID + '-{' + Chapel.Get.storyTitle + '}';
 }());
