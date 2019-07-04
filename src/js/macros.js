@@ -3,14 +3,78 @@
 
     var A = Chapel.Audio;
 
-    // commands should be mapped to methods, for now, commands ARE method names
+    function isFn (thing) {
+        return thing && typeof thing === 'function';
+    }
+
+    function getCommand (cmd, what) {
+        if (!cmd || typeof cmd !== 'string') {
+            return null;
+        }
+        cmd = cmd.toLowerCase().trim();
+
+        switch (cmd) {
+            // camelcase method names
+            case 'isplaying':
+                cmd = 'isPlaying';
+                break;
+            case 'playwhenpossible':
+                cmd = 'playWhenPossible';
+                break;
+            case 'ismuted':
+                cmd = 'isAMuted';
+                break;
+            case 'togglemute':
+                cmd = 'toggleMute';
+                break;
+            case 'getvolume':
+                cmd = 'getVolume';
+                break;
+            case 'islooping':
+                cmd = 'isLooping';
+                break;
+            case 'toggleloop':
+                cmd = 'toggleLoop';
+                break;
+            case 'fadein':
+                cmd = 'fadeIn';
+                break;
+            case 'fadeout':
+                cmd = 'fadeOut';
+                break;
+            case 'fadeto':
+                cmd = 'fadeTo';
+                break;
+            case 'stopall':
+                cmd = 'stopAll';
+                break;
+        }
+
+        if (cmd === 'isPlaying' && what === 'master') {
+            cmd = 'audioPlaying';
+        }
+
+        if (what === 'group') {
+            if (isFn(A.group.prototype[cmd])) {
+                return cmd;
+            }
+        } else if (what === 'master') {
+            if (isFn(A)) {
+                return cmd;
+            }
+        } else {
+            if (isFn(A.classes[what].prototype[cmd])) {
+                return cmd;
+            }
+        }
+    }
 
     var macros = {
         // (newtrack: name, source [, source...])
-        newtrack : function (name, sources) {
-            sources = [].slice.call(arguments).slice(1);
+        newtrack : function () {
+            var args = [].slice.call(arguments);
             try {
-                return A.newTrack(name, sources);
+                return A.newTrack.apply(null, args);
             } catch (err) {
                 // these should be made into Harlowe errors at some point
                 alert('Error in the (newtrack:) macro: ' + err.message);
@@ -34,10 +98,20 @@
                 alert('Error in the (newgroup:) macro: ' + err.message);
             }
         },
+        // (masteraudio: command [, args...])
+        masteraudio : function (command) {
+            try {
+                command = getCommand(command);
+                return A[command].apply(null, [].slice.call(arguments).slice(1));
+            } catch (err) {
+                alert('Error in the (track:) macro: ' + err.message);
+            }
+        },
         // (track: name, command [, args...])
         track : function (track, command) {
             try {
                 var _get = A.track(track);
+                command = getCommand(command);
                 return _get[command].apply(_get, [].slice.call(arguments).slice(2));
             } catch (err) {
                 alert('Error in the (track:) macro: ' + err.message);
@@ -47,6 +121,7 @@
         playlist : function (list, command) {
             try {
                 var _get = A.playlist(list);
+                command = getCommand(command);
                 return _get[command].apply(_get, [].slice.call(arguments).slice(2));
             } catch (err) {
                 alert('Error in the (playlist:) macro: ' + err.message);
@@ -56,6 +131,7 @@
         group : function (gr, command) {
             try {
                 var _get = A.group(gr);
+                command = getCommand(command);
                 return _get[command].apply(_get, [].slice.call(arguments).slice(2));
             } catch (err) {
                 alert('Error in the (group:) macro: ' + err.message);

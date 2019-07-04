@@ -5,6 +5,39 @@
 
     var $dataChunk = $('tw-storydata');
 
+    var $trackPassage = $dataChunk.find('tw-passagedata[name="hal.tracks"]');
+
+    var tracksFromPassage = null;
+
+    if ($trackPassage.length) {
+        var lines = $trackPassage.text().split(/[\n\r]/).filter( function (l) {
+            // ignore blank or malformed lines
+            return l && l.trim() && l.includes(':');
+        });
+        var tracks = new Map(lines.map( function (line) {
+            var parts = line.split(':');
+
+            var trackName = parts[0].trim();
+            trackName = trackName.replace(/^["']/, '');
+            trackName = trackName.replace(/["']$/, '');
+            trackName = trackName.trim();
+
+            var sources = parts[1].split(',').map( function (src) {
+                src = src.trim();
+                src = src.replace(/^["']/, '');
+                src = src.replace(/["']$/, '');
+                src = src.trim();
+                return src;
+            });
+
+            // TODO: test validity of trackName and sources array
+
+            return [trackName, sources];
+        }));
+        console.log(tracks);
+        tracksFromPassage = tracks;
+    }
+
     function getHarloweVersion () {
         var semVer = $dataChunk.attr('format-version');
         var major = semVer.split('.')[0];
@@ -33,10 +66,16 @@
     window.Chapel = window.Chapel || {};
 
     window.Chapel.Get = {
+        version : getHarloweVersion(),
         isHarlowe3OrLater : version3OrLater(),
         storyTitle : getStoryTitle(),
-        IFID : getStoryIFID()
+        IFID : getStoryIFID(),
+        fromPassage : tracksFromPassage
     };
+
+    if (Chapel.Get.version < 2) {
+        throw new Error('The Harlowe Audio Library is only designed to work with Harlowe 2 and 3; you appear to be using Harlowe 1 or an otherwise invalid story format.');
+    }
 
     // set storage key for this story with IFID + Story Title
     options.storagekey = options.storagekey + '-' + Chapel.Get.IFID + '-{' + Chapel.Get.storyTitle + '}';

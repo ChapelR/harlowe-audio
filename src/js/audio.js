@@ -241,79 +241,85 @@
         this.sources = sources;
     }
 
-    Track.list = [];
+    Object.assign(Track, {
+        list : [],
 
-    Track.is = function (inst) {
-        return (inst instanceof Track);
-    };
+        is : function (inst) {
+            return (inst instanceof Track);
+        },
 
-    Track.has = function (id) {
-        return Track.list.some( function (track) {
-            return track.id === id;
-        });
-    };
+        has : function (id) {
+            return Track.list.some( function (track) {
+                return track.id === id;
+            });
+        },
 
-    Track.emit = function (type, track) {
-        $(document).trigger({
-            type : type,
-            track : track
-        });
-        track.emit(type);
-    };
+        emit : function (type, track) {
+            $(document).trigger({
+                type : type,
+                track : track
+            });
+            track.emit(type);
+        },
 
-    Track.add = function (id) {
-        var sources = [].slice.call(arguments).slice(1);
-        var track = new Track(id, sources);
-        Track.list.push(track);
-        track.$el.on('canplay', function () {
-            Track.emit(':available', track);
-        });
-        track.$el.on('canplaythrough', function () {
-            Track.emit(':loaded', track);
-        });
-        track.attach();
-        return track;
-    };
+        add : function (id, sources, test) {
+            if (test) {
+                sources = [].slice.call(arguments).slice(1);
+            }
+            var track = new Track(id, sources);
+            Track.list.push(track);
+            track.$el.on('canplay', function () {
+                Track.emit(':available', track);
+            });
+            track.$el.on('canplaythrough', function () {
+                Track.emit(':loaded', track);
+            });
+            track.attach();
+            return track;
+        },
 
-    Track.renew = function () {
-        Track.list.forEach( function (track) {
-            track.mute(track.isMuted());
-            track.volume(track.getVolume());
-        });
-    };
+        renew : function () {
+            Track.list.forEach( function (track) {
+                track.mute(track.isMuted());
+                track.volume(track.getVolume());
+            });
+        },
 
-    Track.getIdx = function (id) {
-        return Track.list.findIndex( function (track) {
-            return track.id === id;
-        });
-    };
+        getIdx : function (id) {
+            return Track.list.findIndex( function (track) {
+                return track.id === id;
+            });
+        },
 
-    Track.get = function (id) {
-        return Track.list.find( function (track) {
-            return track.id === id;
-        });
-    };
+        get : function (id) {
+            return Track.list.find( function (track) {
+                return track.id === id;
+            });
+        },
 
-    Track.extend = function (data) {
-        _extend(Track, data);
-    };
+        extend : function (data) {
+            _extend(Track, data);
+        },
 
-    Track.extendPrototype = function (data) {
-        _extend(Track.prototype, data);
-    };
+        extendPrototype : function (data) {
+            _extend(Track.prototype, data);
+        },
 
-    Track.removeFromDOM = function (track) {
-        if (typeof track === 'string') {
-            track = Track.get(track);
+        removeFromDOM : function (track) {
+            if (typeof track === 'string') {
+                track = Track.get(track);
+            }
+            if (track && Track.is(track)) {
+                track.unattach();
+            } else {
+                $container.remove();
+            }
         }
-        if (track && Track.is(track)) {
-            track.unattach();
-        } else {
-            $container.remove();
-        }
-    };
+    });
 
-    Track.prototype = {
+    
+
+    Object.assign(Track.prototype, {
         constructor : Track,
         emit : function (type) {
             this.$el.trigger({
@@ -572,7 +578,7 @@
             }
             this.$el.one(type, cb);
         }
-    };
+    });
 
     var validMaster = validEvents.track.concat(validEvents.master);
 
@@ -635,8 +641,22 @@
     }
 
     Audio.classes.Track = Track;
-    Audio.newTrack = Track.add;
-    Audio.track = Track.get;
+    Audio.newTrack = function () {
+        try {
+            return Track.add.apply(null, arguments);
+        } catch (err) {
+            console.error(err.message);
+            alert('Error in A.newTrack() -> see the console for more information.');
+        }
+    }
+    Audio.track = function (id) {
+        try {
+            return Track.get(id);
+        } catch (err) {
+            console.error(err.message);
+            alert('Error in A.track() -> see the console for more information.');
+        }
+    }
 
     function createAudioGroup (groupName, trackIDs) {
         if (!trackIDs || !Array.isArray(trackIDs)) {
@@ -672,27 +692,29 @@
         }
     };
 
-    Audio.group.is = function (inst) {
-        return this instanceof Audio.group;
-    };
+    Object.assign(Audio.group, {
+        is : function (inst) {
+            return (this instanceof Audio.group);
+        },
 
-    Audio.group.runOnAll = function (group, method, args) {
-        group.members.forEach( function (track) {
-            track[method].apply(track, (args && Array.isArray(args)) ? args : []);
-        });
-    };
+        runOnAll : function (group, method, args) {
+            group.members.forEach( function (track) {
+                track[method].apply(track, (args && Array.isArray(args)) ? args : []);
+            });
+        },
 
-    Audio.group.extend = function (data) {
-        _extend(Audio.group, data);
-    };
+        extend : function (data) {
+            _extend(Audio.group, data);
+        },
 
-    Audio.group.extendPrototype = function (data) {
-        _extend(Audio.group.prototype, data);
-    };
+        extendPrototype : function (data) {
+            _extend(Audio.group.prototype, data);
+        }
+    });
 
     // Audio.group('playing').pause(); or Audio.group('playing').mute(true);
 
-    Audio.group.prototype = {
+    Object.assign(Audio.group.prototype, {
         constructor : Audio.group,
         run : function (method, args, test) {
             if (test != null) {
@@ -726,7 +748,7 @@
             this.run('loop', [bool]);
             return this;
         }
-    };
+    });
 
     function Playlist (id, trackIDs) {
         if (!(this instanceof Playlist)) {
@@ -741,29 +763,31 @@
         this.playing = false;
     }
 
-    Playlist.list = {};
+    Object.assign(Playlist, {
+        list : {},
 
-    Playlist.is = function (inst) {
-        return inst instanceof Playlist;
-    };
+        is : function (inst) {
+            return inst instanceof Playlist;
+        },
 
-    Playlist.add = function (id, trackList, test) {
-        if (test) {
-            trackList = [].slice.call(arguments).slice(1);
+        add : function (id, trackList, test) {
+            if (test) {
+                trackList = [].slice.call(arguments).slice(1);
+            }
+            Playlist.list[id] = new Playlist(id, trackList);
+            return Playlist.list[id];
+        },
+
+        extend : function (data) {
+            _extend(Playlist, data);
+        },
+
+        extendPrototype : function (data) {
+            _extend(Playlist.prototype, data);
         }
-        Playlist.list[id] = new Playlist(id, trackList);
-        return Playlist.list[id];
-    };
+    });
 
-    Playlist.extend = function (data) {
-        _extend(Playlist, data);
-    };
-
-    Playlist.extendPrototype = function (data) {
-        _extend(Playlist.prototype, data);
-    };
-
-    Playlist.prototype = {
+    Object.assign(Playlist.prototype, {
         constructor : Playlist,
         clone : function () { 
             return new Playlist(this.id, this.tracks.map( function (tr) { return tr.id; }));
@@ -831,6 +855,9 @@
             this.looping = !!bool;
             return this;
         },
+        isLooping : function () {
+            return this.looping;
+        },
         stop : function () {
             var track = Track.get(this.current);
             track.stop();
@@ -844,14 +871,29 @@
             this.playing = false;
             return this;
         }
-    };
+    });
 
     // Audio.playlist('myplaylist').play(); or Audio.playlist('myplaylist').loop(true);
 
     Audio.classes.Playlist = Playlist;
-    Audio.createPlaylist = Playlist.add;
+    Audio.createPlaylist = function () {
+        try {
+            Playlist.add.apply(null, arguments);
+        } catch (err) {
+            console.error(err.message);
+            alert('Error in A.createPlaylist() -> see the console for more information.');
+        }
+    }
     Audio.playlist = function (id) {
-        return Playlist.list[id] || null;
+        try {
+            var list = Playlist.list[id] || null;
+            if (!list) {
+                throw new Error('Playlist "' + id + '" does not exist.');
+            }
+        } catch (err) {
+            console.error(err.message);
+            alert('Error in A.createPlaylist() -> see the console for more information.');
+        }
     };
 
     // extensions
@@ -868,9 +910,5 @@
     window.Chapel = window.Chapel || {};
 
     window.Chapel.Audio = Audio;
-
-    if (options.persistPrefs) {
-        Audio.loadPrefs();
-    }
 
 }());
