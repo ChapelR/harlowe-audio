@@ -40,4 +40,33 @@
 
     // set storage key for this story with IFID + Story Title
     options.storagekey = options.storagekey + '-' + Chapel.Get.IFID + '-{' + Chapel.Get.storyTitle + '}';
+
+    // hack the macro API
+    var _macros = require('macros');
+    function simpleMacro (name, cb) {
+        _macros.add(name, function () {
+            var arr = [].slice.call(arguments).slice(1);
+            var result = cb.apply(null, arr);
+            if (typeof result === 'string' || typeof result === 'boolean' || typeof result === 'number') {
+                // only return numbers, booleans, and strings
+                return result;
+            }
+            return '';
+        }, _macros.TypeSignature.zeroOrMore(_macros.TypeSignature.Any));
+    }
+
+    function addMacros (obj) {
+        if (!obj || typeof obj !== 'object') {
+            return;
+        }
+        Object.keys(obj).forEach( function (macro) {
+            simpleMacro(macro, obj[macro]);
+        });
+    }
+
+    window.Chapel = window.Chapel || {};
+
+    window.Chapel.Macros = {
+        add : addMacros
+    };
 }());

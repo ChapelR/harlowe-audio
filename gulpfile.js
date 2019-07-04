@@ -52,6 +52,7 @@ function buildScripts () {
         'state.js',
         'setup.js',
         'userland.js',
+        'macros.js',
         'fixes.js'
     ].map( function (file) {
         return './src/js/' + file;
