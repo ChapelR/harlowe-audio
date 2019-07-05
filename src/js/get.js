@@ -18,6 +18,16 @@
         });
         var tracks = new Map(lines.map( function (line) {
             var parts = line.split(':');
+            if (parts.length > 2) {
+                var reassemble = '';
+                parts.forEach( function (text, idx) {
+                    if (idx !== 0) {
+                        reassamble = reassamble + text;
+                    }
+                });
+                parts[1] = reassamble;
+                parts.length = 2;
+            }
 
             var trackName = parts[0].trim();
             trackName = trackName.replace(/^["']/, '');
