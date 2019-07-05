@@ -5,6 +5,8 @@
 
     var $dataChunk = $('tw-storydata');
 
+    // track defs (special passage method)
+
     var $trackPassage = $dataChunk.find('tw-passagedata[name="hal.tracks"]');
 
     var tracksFromPassage = null;
@@ -30,12 +32,66 @@
                 return src;
             });
 
-            // TODO: test validity of trackName and sources array
-
             return [trackName, sources];
         }));
-        console.log(tracks);
         tracksFromPassage = tracks;
+    }
+
+    // user configs
+
+    var $configPassage = $dataChunk.find('tw-passagedata[name="hal.config"]');
+
+    var configsFromPassage = null;
+
+    if ($configPassage.length) {
+        var cfgLines = $configPassage.text().split(/[\n\r]/).filter( function (l) {
+            // ignore blank or malformed lines
+            return l && l.trim() && l.includes(':');
+        });
+        var userOptions = {};
+
+        cfgLines.map( function (line) {
+            var parts = line.split(':');
+
+            var configName = parts[0].trim();
+            configName = configName.replace(/^["']/, '');
+            configName = configName.replace(/["']$/, '');
+            configName = configName.trim();
+
+            var value = parts[1].trim();
+            value = value.replace(/^["']/, '');
+            value = value.replace(/["']$/, '');
+            value = value.trim().toLowerCase();
+
+            return [configName, value];
+        }).forEach( function (pair) {
+            userOptions[pair[0]] = pair[1];
+        });
+        configsFromPassage = userOptions;
+    }
+
+    if (configsFromPassage) {
+        Object.keys(configsFromPassage).forEach( function (option) {
+            var configName = option, 
+                toSet = userOptions[option],
+                type = typeof Chapel.options[option];
+            if (type === 'boolean') {
+                if (toSet === 'true') {
+                    Chapel.options[configName] = true;
+                } else if (toSet === 'false') {
+                    Chapel.options[configName] = false;
+                }
+            } else if (type === 'number') {
+                toSet = Number(toSet);
+                if (!Number.isNaN(toSet)) {
+                    Chapel.options[configName] = toSet;
+                }
+            } else if (type === 'string') {
+                if (toSet) {
+                    Chapel.options[configName] = toSet;
+                }
+            }
+        });
     }
 
     function getHarloweVersion () {
@@ -78,7 +134,7 @@
     }
 
     // set storage key for this story with IFID + Story Title
-    options.storagekey = options.storagekey + '-' + Chapel.Get.IFID + '-{' + Chapel.Get.storyTitle + '}';
+    Chapel.options.storagekey = '%%hal-' + Chapel.Get.IFID + '-{' + Chapel.Get.storyTitle + '}';
 
     // hack the macro API
     var _macros = require('macros');
@@ -103,9 +159,8 @@
         });
     }
 
-    window.Chapel = window.Chapel || {};
-
     window.Chapel.Macros = {
         add : addMacros
     };
+    
 }());

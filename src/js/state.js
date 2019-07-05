@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var options = Chapel.options;
+
     // save the state to reload it on restarts...
     // load script just before setup.js
 

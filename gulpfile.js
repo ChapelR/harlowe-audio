@@ -28,7 +28,7 @@ function processStyles (dir, out, name) {
 
 // linting 
 function lint () {
-    return gulp.src('./src')
+    return gulp.src('./src/js')
         .pipe(jshint())
         .pipe(jshint.reporter('default', { beep : true }));
 }
@@ -44,6 +44,7 @@ function rimraf () {
 // build functions
 function buildScripts () {
     var jsFiles = [
+        'options.js',
         'get.js',
         'audio.js',
         'controlpanel.js',
@@ -52,8 +53,7 @@ function buildScripts () {
         'state.js',
         'setup.js',
         'userland.js',
-        'macros.js',
-        'fixes.js'
+        'macros.js'
     ].map( function (file) {
         return './src/js/' + file;
     });
@@ -73,6 +73,7 @@ function buildStyles () {
 // add js wrapper
 function wrap () {
     return gulp.src('./src/wrap/wrapper.js')
+        .pipe(replace('{{version}}', require('./package.json').version))
         .pipe(replace('/*** library code */', fs.readFileSync('./src/wrap/min.js', 'utf8')))
         .pipe(rename('harlowe-audio.min.js'))
         .pipe(gulp.dest('./dist'));

@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var options = Chapel.options;
+
     if (options.globalA && window.A === undefined) {
         window.A = window.Chapel.Audio;
     }
@@ -36,7 +38,7 @@
     }
 
     if (options.persistPrefs) {
-        Audio.loadPrefs();
+        Chapel.Audio.loadPrefs();
     }
 
 }());

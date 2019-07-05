@@ -1,7 +1,9 @@
 (function () {
     'use strict';
 
-    if (options.controls.show) {
+    var options = Chapel.options;
+
+    if (options.showControls) {
 
         var $user = $(document.createElement('div'))
             .attr('id', 'story-menu')
@@ -11,7 +13,7 @@
             .attr('id', 'vol-title')
             .append('Volume');
 
-        if (!options.controls.volumeDisplay) {
+        if (!options.volumeDisplay) {
             $volTitle.css('display', 'none');
         }
 
@@ -73,7 +75,7 @@
             .append($user, $volTitle, $volume, $mute, $toggle)
             .appendTo(document.body);
 
-        if (options.controls.startClosed) {
+        if (options.sidebarStartClosed) {
             $panel.addClass('closed');
         }
 

@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var options = Chapel.options;
+
     var $container = $(document.createElement('div'))
         .attr('id', 'audio-container')
         .css('display', 'none')
@@ -648,7 +650,7 @@
             console.error(err.message);
             alert('Error in A.newTrack() -> see the console for more information.');
         }
-    }
+    };
     Audio.track = function (id) {
         try {
             return Track.get(id);
@@ -656,7 +658,7 @@
             console.error(err.message);
             alert('Error in A.track() -> see the console for more information.');
         }
-    }
+    };
 
     function createAudioGroup (groupName, trackIDs) {
         if (!trackIDs || !Array.isArray(trackIDs)) {
@@ -883,13 +885,14 @@
             console.error(err.message);
             alert('Error in A.createPlaylist() -> see the console for more information.');
         }
-    }
+    };
     Audio.playlist = function (id) {
         try {
             var list = Playlist.list[id] || null;
             if (!list) {
                 throw new Error('Playlist "' + id + '" does not exist.');
             }
+            return list;
         } catch (err) {
             console.error(err.message);
             alert('Error in A.createPlaylist() -> see the console for more information.');

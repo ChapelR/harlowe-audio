@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var options = Chapel.options;
+
     var _state = State;
 
     var $overlay = $((document).createElement('div'))
@@ -42,7 +44,7 @@
             return tr.id;
         });
 
-        if (options.forceDismiss) {
+        if (options.totalLoadLimit > 0) {
             /**
               *  Dismiss loading screen once tolerance for waiting is expired.
               *  This will ensure that unreliable connections, like on mobile data,
@@ -52,7 +54,7 @@
              **/
             setTimeout( function () {
                 loaderDismiss();
-            }, options.loadLimit.total);
+            }, options.totalLoadLimit);
         }
 
         function _load () {
@@ -85,7 +87,7 @@
                         }
                         track.$el.off('canplay');
                         _load();
-                    }, options.loadLimit.track);
+                    }, options.trackLoadLimit);
 
                 } else {
 
