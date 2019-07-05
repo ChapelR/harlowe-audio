@@ -59,7 +59,7 @@
                 return cmd;
             }
         } else if (what === 'master') {
-            if (isFn(A)) {
+            if (isFn(A[cmd])) {
                 return cmd;
             }
         } else {
@@ -67,6 +67,7 @@
                 return cmd;
             }
         }
+        throw new Error('Cannot run the command: "' + cmd + '" on the API "' + what + '". The command may be invalid, or this may be a bug in HAL.');
     }
 
     var macros = {
@@ -101,17 +102,17 @@
         // (masteraudio: command [, args...])
         masteraudio : function (command) {
             try {
-                command = getCommand(command);
+                command = getCommand(command, 'master');
                 return A[command].apply(null, [].slice.call(arguments).slice(1));
             } catch (err) {
-                alert('Error in the (track:) macro: ' + err.message);
+                alert('Error in the (masteraudio:) macro: ' + err.message);
             }
         },
         // (track: name, command [, args...])
         track : function (track, command) {
             try {
                 var _get = A.track(track);
-                command = getCommand(command);
+                command = getCommand(command, 'Track');
                 return _get[command].apply(_get, [].slice.call(arguments).slice(2));
             } catch (err) {
                 alert('Error in the (track:) macro: ' + err.message);
@@ -121,7 +122,7 @@
         playlist : function (list, command) {
             try {
                 var _get = A.playlist(list);
-                command = getCommand(command);
+                command = getCommand(command, 'Playlist');
                 return _get[command].apply(_get, [].slice.call(arguments).slice(2));
             } catch (err) {
                 alert('Error in the (playlist:) macro: ' + err.message);
@@ -131,7 +132,7 @@
         group : function (gr, command) {
             try {
                 var _get = A.group(gr);
-                command = getCommand(command);
+                command = getCommand(command, 'group');
                 return _get[command].apply(_get, [].slice.call(arguments).slice(2));
             } catch (err) {
                 alert('Error in the (group:) macro: ' + err.message);
