@@ -67,15 +67,24 @@ function buildStyles () {
     ].map( function (file) {
         return './src/css/' + file;
     });
-    return processStyles(cssFiles, './dist', 'harlowe-audio.min.css');
+    return processStyles(cssFiles, './src/wrap', 'min.css');
 }
 
 // add js wrapper
-function wrap () {
+function wrapJS () {
     return gulp.src('./src/wrap/wrapper.js')
         .pipe(replace('{{version}}', require('./package.json').version))
-        .pipe(replace('/*** library code */', fs.readFileSync('./src/wrap/min.js', 'utf8')))
+        .pipe(replace('{{code}}', fs.readFileSync('./src/wrap/min.js', 'utf8')))
         .pipe(rename('harlowe-audio.min.js'))
+        .pipe(gulp.dest('./dist'));
+}
+
+// add CSS wrapper
+function wrapCSS () {
+    return gulp.src('./src/wrap/wrapper.css')
+        .pipe(replace('{{version}}', require('./package.json').version))
+        .pipe(replace('{{code}}', fs.readFileSync('./src/wrap/min.css', 'utf8')))
+        .pipe(rename('harlowe-audio.min.css'))
         .pipe(gulp.dest('./dist'));
 }
 
@@ -83,7 +92,9 @@ function wrap () {
 gulp.task('clean', rimraf);
 gulp.task('scripts', buildScripts);
 gulp.task('styles', buildStyles);
+gulp.task('wrapJS', wrapJS);
+gulp.task('wrapCSS', wrapCSS);
 gulp.task('files', gulp.parallel('scripts', 'styles'));
-gulp.task('wrap', wrap);
+gulp.task('wrap', gulp.parallel('wrapJS', 'wrapCSS'));
 gulp.task('build', gulp.series('clean', 'files', 'wrap'));
 gulp.task('lint', lint);
