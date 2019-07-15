@@ -4,10 +4,14 @@
 
 This version of HAL includes a vast array of usability improvements, including the introduction of special passages, audio macros, and a variety of other features.
 
-I took the opportunity to rewrite large swathes of HAL for this release, meaning some code written for previous versions of HAL may no longer work correctly, hence the major version bump. In addition, since the recommended way to use HAL has changed so dramatically, this version also required a massive documentation rewrite.
+I took the opportunity to rewrite several parts of HAL for this release, meaning some **code written for previous versions of HAL may no longer work correctly**, hence the major version bump. In addition, since the recommended way to use HAL has changed so dramatically, this version also required a massive documentation rewrite.
 
+The biggest changes are in how you use the library:
 - Added several macros that allow users to interact with HAL using TwineScript. The macros are: `(newtrack:)`, `(newplaylist:)`, `(newgroup:)`, `(masteraudio:)`, `(track:)`, `(playlist:)`, and `(group:)`.
 - Users may now optionally define their tracks in a special passage called `hal.tracks` using the format `trackName: source, source, etc...`; each track definition must go on its own line.
+- Configuration settings are now set via the `hal.config` special passage rather than by hand-editing the library.
+
+The JavaScript API is still available for users who prefer it.
 
 ## v1 Series Releases
 
