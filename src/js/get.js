@@ -18,10 +18,8 @@
         });
         var tracks = new Map(lines.map( function (line) {
             var parts = line.split(':');
-            console.log(parts);
             if (parts.length > 2) {
                 var reassemble = parts.slice(1, parts.length).join(':');
-                console.log(reassemble);
                 parts[1] = reassemble;
                 parts.length = 2;
             }
