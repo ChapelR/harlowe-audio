@@ -34,7 +34,7 @@ See [below](#guide) for a guide on the basics of using HAL.
 
 # Guide
 
-This is a quickand dirty guide to getting HAL working. You're here for audio, and this guide aims to please. HAL has a lot of other nice features you'll no doubt love to come to grips with later, but for now, we'll focus on the bare minimum you'll need to know to take your story from a boring, soundless husk to grooving like it's 1999.
+This is a quick and dirty guide to getting HAL working. You're here for audio, and this guide aims to please. HAL has a lot of other nice features you may need to come to grips with later, but for now, we'll focus on the bare minimum you'll need to know to take your story from a boring, soundless husk to grooving like it's 1999.
 
 > [!NOTE]
 > This guide is intended to get users up and running with HAL quickly and without too much fuss. It covers v2.0.0 and higher of HAL, [for v1, check out its docs](v1). For detailed reference documentation for v2, [click here](v2).
@@ -72,7 +72,7 @@ To define a track, list the track name first, then a colon, and finally one or m
 
 Track names should only include letters (upper or lower case), numbers, dashes (`-`), underscores (`_`), and dollar signs (`$`). Other characters may work but are not officially supported. That's code for "don't use them even when they seem like they're working."
 
-An example of a `hal.tracks` special passage that defines two tracks: a beeping sound called `beep` and a song called `que-pena` might look like this:
+An example of a `hal.tracks` special passage that defines two tracks&mdash;a beeping sound called `beep` and a song called `que-pena`&mdash;might look like this:
 
 ```
 beep: ./audio/beep.mp3, ./audio/beep.ogg

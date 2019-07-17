@@ -46,10 +46,10 @@
 
     // playlists
     Playlist.extend = function (data) {
-        _extend(Track, data);
+        _extend(Playlist, data);
     };
     Playlist.extendPrototype = function (data) {
-        _extend(Track.prototype, data);
+        _extend(Playlist.prototype, data);
     };
 
     A.extendPlaylist = Playlist.extend;

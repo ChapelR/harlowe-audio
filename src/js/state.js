@@ -42,6 +42,7 @@
                     sources : track.sources
                 };
             });
+            Chapel.debug('Session Saved (Tracks) -> ', data);
             data = JSON.stringify(data);
             _store.save('tracks', data);
         } catch (err) {
@@ -58,11 +59,12 @@
                 data = JSON.parse(data);
             }
             if (Array.isArray(data) && data.length) {
+                Chapel.debug('Session Loaded (Tracks) -> ', data);
                 data.forEach( function (def) {
                     if (def.id && def.sources && !Chapel.Audio.classes.Track.has(def.id)) {
                         Chapel.Audio.newTrack.apply(null, [def.id].concat(def.sources));
                     } else {
-                        console.warn('Track reload failed...');
+                        Chapel.debug('Track reloading skipped.');
                     }
                 });
             }
@@ -85,6 +87,7 @@
                 obj.id = plList[pl].id;
                 return obj;
             });
+            Chapel.debug('Session Saved (Playlists) -> ', data);
             data = JSON.stringify(data);
             _store.save('playlists', data);
         } catch (err) {
@@ -100,6 +103,7 @@
                 data = JSON.parse(data);
             }
             if (data && Array.isArray(data) && data.length) {
+                Chapel.debug('Session Loaded (Playlists) -> ', data);
                 data.forEach( function (def) {
                     if (def.id && def.tracks) {
                         Chapel.Audio.createPlaylist(def.id, def.tracks);
@@ -125,6 +129,7 @@
                     return tr.id;
                 });
             });
+            Chapel.debug('Session Saved (Groups) -> ', data);
             data = JSON.stringify(data);
             _store.save('groups', data);
         } catch (err) {
@@ -140,6 +145,7 @@
                 data = JSON.parse(data);
             }
             if (data && typeof data === 'object') {
+                Chapel.debug('Session Loaded (Groups) -> ', data);
                 Object.keys(data).forEach( function (gr) {
                     data[gr].map( function (tr) {
                         return Chapel.Audio.classes.Track.get(tr);
