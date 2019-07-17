@@ -3,6 +3,7 @@
 
     var A = Chapel.Audio;
     var Track = A.classes.Track;
+    var _extend = A.data._extend;
 
     function createAudioGroup (groupName, trackIDs) {
         if (!trackIDs || !Array.isArray(trackIDs)) {
@@ -47,14 +48,6 @@
             group.members.forEach( function (track) {
                 track[method].apply(track, (args && Array.isArray(args)) ? args : []);
             });
-        },
-
-        extend : function (data) {
-            _extend(A.group, data);
-        },
-
-        extendPrototype : function (data) {
-            _extend(A.group.prototype, data);
         }
     });
 
@@ -95,7 +88,4 @@
             return this;
         }
     });
-
-    A.extendGroup = A.group.extend;
-    A.extendGroupProto = A.group.extendPrototype;
 }());

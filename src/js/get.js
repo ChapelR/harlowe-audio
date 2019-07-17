@@ -103,8 +103,11 @@
         });
     }
 
-    function getHarloweVersion () {
+    function getHarloweVersion (sem) {
         var semVer = $dataChunk.attr('format-version');
+        if (sem) {
+            return semVer;
+        }
         var major = semVer.split('.')[0];
         major = Number(major);
         if (Number.isNaN(major)) {
@@ -127,13 +130,6 @@
     function getStoryIFID () {
         return $dataChunk.attr('ifid');
     }
-
-    if (Chapel.Get.version < 2) {
-        throw new Error('The Harlowe Audio Library is only designed to work with Harlowe 2 and 3; you appear to be using Harlowe 1 or an otherwise invalid story format.');
-    }
-
-    // set storage key for this story with IFID + Story Title
-    Chapel.options.storagekey = '%%hal-' + Chapel.Get.IFID + '-{' + Chapel.Get.storyTitle + '}';
 
     // hack the macro API
     var _macros = require('macros');
@@ -171,5 +167,18 @@
         IFID : getStoryIFID(),
         fromPassage : tracksFromPassage
     };
-    
+
+    Chapel.debug('Harlowe Version -> ', getHarloweVersion(true));
+    Chapel.debug('Harlowe Major Version -> ', Chapel.Get.version);
+    Chapel.debug('Story Title -> ', Chapel.Get.storyTitle);
+    Chapel.debug('Story IFID -> ', Chapel.Get.IFID);
+
+    if (Chapel.Get.version < 2) {
+        throw new Error('The Harlowe Audio Library is only designed to work with Harlowe 2 and 3; you appear to be using Harlowe 1 or an otherwise invalid story format.');
+    }
+
+    // set storage key for this story with IFID + Story Title
+    Chapel.options.storagekey = '%%hal-' + Chapel.Get.IFID + '-{' + Chapel.Get.storyTitle + '}';
+    Chapel.debug('Storage Key -> ', Chapel.options.storagekey);
+
 }());

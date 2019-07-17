@@ -11,11 +11,19 @@
         sidebarStartClosed : true,
         volumeDisplay : true,
         trackLoadLimit : 500,
-        totalLoadLimit : 8000
+        totalLoadLimit : 8000,
+        debug : false
     };
 
     window.Chapel = window.Chapel || {};
 
     window.Chapel.options = options;
+
+    window.Chapel.debug = function () {
+        if (!Chapel.options.debug) {
+            return;
+        }
+        console.log.apply(null, arguments);
+    };
 
 }());

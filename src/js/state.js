@@ -7,9 +7,12 @@
     // load script just before setup.js
 
     var _key = options.storagekey + '_hal_restart_';
+    Chapel.debug('HAL Session Key -> ', _key);
+
     var _store = (function () {
         var save, load;
         if (window.sessionStorage) {
+            Chapel.debug('Session Storage Available');
             save = function (key, data) {
                 window.sessionStorage.setItem(_key + key, data);
             };
@@ -17,6 +20,7 @@
                 return window.sessionStorage.getItem(_key + key);
             };
         } else {
+            Chapel.debug('Session Storage Unavailable');
             save = function () { /* no op */ };
             load = function () { /* no op */ };
             console.warn('Session storage is unavailable...');

@@ -3,6 +3,7 @@
 
     var A = Chapel.Audio;
     var Track = A.classes.Track;
+    var _extend = A.data._extend;
     
     function Playlist (id, trackIDs) {
         if (!(this instanceof Playlist)) {
@@ -30,14 +31,6 @@
             }
             Playlist.list[id] = new Playlist(id, trackList);
             return Playlist.list[id];
-        },
-
-        extend : function (data) {
-            _extend(Playlist, data);
-        },
-
-        extendPrototype : function (data) {
-            _extend(Playlist.prototype, data);
         }
     });
 
@@ -150,8 +143,4 @@
             alert('Error in A.createPlaylist() -> see the console for more information.');
         }
     };
-
-
-    A.extendPlaylist = Playlist.extend;
-    A.extendPlaylistProto = Playlist.extendPrototype;
 }());

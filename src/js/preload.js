@@ -23,6 +23,7 @@
     }
 
     function loadSources () { 
+        Chapel.debug('This is a mobile browser -> ', $.browser.mobile);
         if (_state.pastLength || _state.futureLength || $.browser.mobile) {
             // do not re-preload
             return;
@@ -76,7 +77,7 @@
 
                     var _done = false;
 
-                    track.$el.one('canplay', function () {
+                    track.$el.one('canplaythrough.hal', function () {
                         _load();
                         _done = true;
                     });
@@ -85,7 +86,7 @@
                         if (_done) {
                             return;
                         }
-                        track.$el.off('canplay');
+                        track.$el.off('canplaythrough.hal');
                         _load();
                     }, options.trackLoadLimit);
 

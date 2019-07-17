@@ -50,6 +50,7 @@ function buildScripts () {
         'track.js',
         'group.js',
         'list.js',
+        'extensions.js',
         'controlpanel.js',
         'detect.js',
         'preload.js',

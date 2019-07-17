@@ -42,18 +42,6 @@
 
     var safeAudioStart = 100;
 
-    function _extend (obj, newStuff) {
-        if (typeof obj !== 'object' || typeof newStuff !== 'object') {
-            throw new Error('Invalid extension.');
-        }
-        Object.keys(newStuff).forEach( function (key) {
-            if (obj[key] !== undefined) {
-                throw new Error('Invalid extension: cannot clobber existing property "' + key + '"');
-            }
-            obj[key] = newStuff[key];
-        });
-    }
-
     var Audio = {
         // no API
         loaded : [],
@@ -155,52 +143,72 @@
 
     var validMaster = validEvents.track.concat(validEvents.master);
 
-    Audio.data = {
-        validEvents : validEvents,
-        bail : bail
+    // event parser
+    function parseEvent (type, master) {
+        if (!type || typeof type !== 'string' || !type.trim()) {
+            return null;
+        }
+        var events = type.split(' ').map( function (type) {
+            type = type.split('.')[0];
+            if (type[0] !== ':') {
+                type = ':' + type;
+            }
+            return type + '.userland';
+        }).filter( function (type) {
+            if (master) {
+                return validMaster.includes(type);
+            }
+            return validEvents.track.includes(type);
+        }).join(' ');
+        if (events && events.trim()) {
+            return events;
+        }
+        return null;
     }
+
+    Audio.data = {
+        parseEvent : parseEvent,
+        bail : bail
+    };
 
     Audio.on = function (type, cb) {
         if (!cb || typeof cb !== 'function') {
             console.error('Chapel.Audio.on() -> invalid callback');
             return;
         }
-        type = type.trim().toLowerCase();
-        if (type[0] !== ':') {
-            type = ':' + type;
+        type = parseEvent(type, true);
+        if (type) {
+            $(document).on(type, cb);
         }
-        if (!validMaster.includes(type)) {
-            console.error('Chapel.Audio.on() -> invalid event type');
-            return;
-        }
-        $(document).on(type, cb);
     };
     Audio.one = function (type, cb) {
         if (!cb || typeof cb !== 'function') {
             console.error('Chapel.Audio.one() -> invalid callback');
             return;
         }
-        type = type.trim().toLowerCase();
-        if (type[0] !== ':') {
-            type = ':' + type;
+        type = parseEvent(type, true);
+        if (type) {
+            $(document).one(type, cb);
         }
-        if (!validMaster.includes(type)) {
-            console.error('Chapel.Audio.one() -> invalid event type');
-            return;
+    };
+
+    Audio.off = function (type) {
+        type = parseEvent(type, true);
+        if (type) {
+            $(document).off(type);
         }
-        $(document).one(type, cb);
     };
 
     if (options.persistPrefs) {
-        Audio.on(':master-mute', Audio.savePrefs);
-        Audio.on(':master-volume', Audio.savePrefs);
+        $(document).on(':master-mute', Audio.savePrefs);
+        $(document).on(':master-volume', Audio.savePrefs);
     }
 
-    Audio.on(':play', function (ev) {
+    $(document).on(':play', function (ev) {
         ev.track.addToGroup('playing');
     });
 
-    Audio.on(':stop', function (ev) {
+    $(document).on(':stop', function (ev) {
         ev.track.removeFromGroup('playing');
     });
 
@@ -215,10 +223,7 @@
         });
     }
 
-    // extensions
-    Audio.extend = function (data) {
-        _extend(Audio, data);
-    };
+    Audio.parseEvent = parseEvent;
 
     window.Chapel = window.Chapel || {};
 

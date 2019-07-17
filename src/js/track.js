@@ -2,7 +2,7 @@
     'use strict';
 
     var A = Chapel.Audio;
-    var validEvents = A.data.validEvents;
+    var parseEvent = A.data.pareEvent;
     var bail = A.data.bail;
     var options = Chapel.options;
 
@@ -83,7 +83,7 @@
             'data-track' : 'id',
             'data-volume' : 1,
             'data-mute' : false
-        }).one('canplay', function () {
+        }).one('canplaythrough.hal', function () {
             A.loaded.push(id);
         });
 
@@ -155,15 +155,6 @@
                 return track.id === id;
             });
         },
-
-        extend : function (data) {
-            _extend(Track, data);
-        },
-
-        extendPrototype : function (data) {
-            _extend(Track.prototype, data);
-        },
-
         removeFromDOM : function (track) {
             if (typeof track === 'string') {
                 track = Track.get(track);
@@ -175,8 +166,6 @@
             }
         }
     });
-
-    
 
     Object.assign(Track.prototype, {
         constructor : Track,
@@ -412,30 +401,26 @@
                 console.error('<track>.on() -> invalid callback');
                 return this;
             }
-            type = type.trim().toLowerCase();
-            if (type[0] !== ':') {
-                type = ':' + type;
+            type = parseEvent(type);
+            if (type) {
+                this.$el.on(type, cb);
             }
-            if (!validEvents.track.includes(type)) {
-                console.error('<track>.on() -> invalid event type');
-                return this;
-            }
-            this.$el.on(type, cb);
         },
         one : function (type, cb) {
             if (!cb || typeof cb !== 'function') {
                 console.error('<track>.one() -> invalid callback');
                 return this;
             }
-            type = type.trim().toLowerCase();
-            if (type[0] !== ':') {
-                type = ':' + type;
+            type = parseEvent(type);
+            if (type) {
+                this.$el.one(type, cb);
             }
-            if (!validEvents.track.includes(type)) {
-                console.error('<track>.one() -> invalid event type');
-                return this;
+        },
+        off : function (type) {
+            type = parseEvent(type);
+            if (type) {
+                this.$el.off(type);
             }
-            this.$el.one(type, cb);
         }
     });
 
@@ -457,9 +442,6 @@
         }
     };
 
-    A.on(':master-mute', Track.renew);
-    A.on(':master-volume', Track.renew);
-
-    A.extendTrack = Track.extend;
-    A.extendTrackProto = Track.extendPrototype;
+    $(document).on(':master-mute', Track.renew);
+    $(document).on(':master-volume', Track.renew);
 }());
