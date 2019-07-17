@@ -67,7 +67,8 @@ function buildScripts () {
 function buildStyles () {
     var cssFiles = [
         'overlay.css',
-        'panel.css'
+        'panel.css',
+        'slider.css'
     ].map( function (file) {
         return './src/css/' + file;
     });

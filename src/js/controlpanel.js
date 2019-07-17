@@ -25,7 +25,8 @@
                 max : 99,
                 step : 1,
                 title : 'Volume'
-            });
+            })
+            .addClass('hal');
 
         var starting = Math.trunc(window.Chapel.Audio.master.volume * 100);
         if (starting < 0) {
