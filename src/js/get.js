@@ -5,6 +5,43 @@
 
     var $dataChunk = $('tw-storydata');
 
+    // parsers
+
+    var parseLn = /(.+?):(.+)/;
+    var lineBreak = /[\r\n]+/;
+    var openQuote = /^["']/;
+    var closeQuote = /["']$/;
+
+    function parseBlock (block) {
+        return block.split(lineBreak).filter( function (line) {
+            return line && line.trim() && line.includes(':');
+        }).map( function (line) {
+            return line.trim();
+        });
+    }
+
+    function cleanString (str) {
+        return str
+            .trim()
+            .replace(openQuote, '')
+            .replace(closeQuote, '')
+            .trim();
+    }
+
+    function parseLine (line) {
+        var parsed = line.match(parseLn);
+        return { 
+            key : cleanString(parsed[1]), 
+            value : cleanString(parsed[2]) 
+        };
+    }
+
+    function parseSourceList (sourceList) {
+        return sourceList.split(',').map( function (source) {
+            return cleanString(source);
+        });
+    }
+
     // track defs (special passage method)
 
     var $trackPassage = $dataChunk.find('tw-passagedata[name="hal.tracks"]');
@@ -12,32 +49,11 @@
     var tracksFromPassage = null;
 
     if ($trackPassage.length) {
-        var lines = $trackPassage.text().split(/[\n\r]/).filter( function (l) {
-            // ignore blank or malformed lines
-            return l && l.trim() && l.includes(':');
-        });
+        var lines = parseBlock($trackPassage.text());
+
         var tracks = new Map(lines.map( function (line) {
-            var parts = line.split(':');
-            if (parts.length > 2) {
-                var reassemble = parts.slice(1, parts.length).join(':');
-                parts[1] = reassemble;
-                parts.length = 2;
-            }
-
-            var trackName = parts[0].trim();
-            trackName = trackName.replace(/^["']/, '');
-            trackName = trackName.replace(/["']$/, '');
-            trackName = trackName.trim();
-
-            var sources = parts[1].split(',').map( function (src) {
-                src = src.trim();
-                src = src.replace(/^["']/, '');
-                src = src.replace(/["']$/, '');
-                src = src.trim();
-                return src;
-            });
-
-            return [trackName, sources];
+            var parts = parseLine(line);
+            return [parts.key, parseSourceList(parts.value)];
         }));
         tracksFromPassage = tracks;
     }
@@ -49,28 +65,16 @@
     var configsFromPassage = null;
 
     if ($configPassage.length) {
-        var cfgLines = $configPassage.text().split(/[\n\r]/).filter( function (l) {
-            // ignore blank or malformed lines
-            return l && l.trim() && l.includes(':');
-        });
+        var cfgLines = parseBlock($configPassage.text())
+
         var userOptions = {};
 
         cfgLines.map( function (line) {
-            var parts = line.split(':');
+            var parts = parseLine(line);
 
-            var configName = parts[0].trim();
-            configName = configName.replace(/^["']/, '');
-            configName = configName.replace(/["']$/, '');
-            configName = configName.trim();
-
-            var value = parts[1].trim();
-            value = value.replace(/^["']/, '');
-            value = value.replace(/["']$/, '');
-            value = value.trim().toLowerCase();
-
-            return [configName, value];
+            return parts;
         }).forEach( function (pair) {
-            userOptions[pair[0]] = pair[1];
+            userOptions[pair.key] = pair.value;
         });
         configsFromPassage = userOptions;
     }
