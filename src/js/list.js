@@ -31,6 +31,18 @@
             }
             Playlist.list[id] = new Playlist(id, trackList);
             return Playlist.list[id];
+        },
+
+        _runOnAll : function (list, method, args, test) {
+            if (test != null) {
+                args = [].slice.call(arguments).slice(2);
+            } else {
+                if (!(args instanceof Array)) {
+                    args = [args];
+                }
+            }
+            var pass = [list.tracks, method, args];
+            Track._runOnMultiple.apply(null, pass);
         }
     });
 
@@ -38,6 +50,17 @@
         constructor : Playlist,
         clone : function () { 
             return new Playlist(this.id, this.tracks.map( function (tr) { return tr.id; }));
+        },
+        _run : function () { // undocumented; prefer groups
+            Playlist._runOnAll.apply(null, [this].concat([].slice.call(arguments)));
+        },
+        volume : function (level) {
+            this._run('volume', level);
+            return this;
+        },
+        mute : function (bool) {
+            this._run('mute', bool);
+            return this;
         },
         shuffle : function () {
             var a = this.tracks;
@@ -56,6 +79,9 @@
         },
         isPlaying : function () {
             return this.playing;
+        },
+        nowPlaying : function () {
+            return Track.get(this.current);
         },
         play : function (i) {
             var self = this;

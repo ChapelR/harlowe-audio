@@ -25,5 +25,4 @@
         }
         console.log.apply(null, arguments);
     };
-
 }());

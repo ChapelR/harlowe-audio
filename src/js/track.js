@@ -164,6 +164,23 @@
             } else {
                 $container.remove();
             }
+        },
+        _runOnMultiple : function (list, method, args) {
+            if (!(list instanceof Array)) {
+                return;
+            }
+            if (!Track.prototype.hasOwnProperty(method)) {
+                return;
+            }
+            list.forEach( function (track) {
+                if (!Track.is(track)) {
+                    track = Track.get(track) || null;
+                }
+                if (!track) {
+                    return;
+                }
+                track[method].apply(track, (args && args instanceof Array) ? args : []);
+            });
         }
     });
 

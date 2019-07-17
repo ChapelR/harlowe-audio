@@ -44,10 +44,16 @@
             return (this instanceof A.group);
         },
 
-        runOnAll : function (group, method, args) {
-            group.members.forEach( function (track) {
-                track[method].apply(track, (args && Array.isArray(args)) ? args : []);
-            });
+        _runOnAll : function (group, method, args, test) {
+            if (test != null) {
+                args = [].slice.call(arguments).slice(2);
+            } else {
+                if (!(args instanceof Array)) {
+                    args = [args];
+                }
+            }
+            var pass = [group.members, method, args];
+            Track._runOnMultiple.apply(null, pass);
         }
     });
 
@@ -55,36 +61,31 @@
 
     Object.assign(A.group.prototype, {
         constructor : A.group,
-        run : function (method, args, test) {
-            if (test != null) {
-                args = [].slice.call(arguments).slice(1);
-            }
-            if (Track.prototype.hasOwnProperty(method)) {
-                A.group.runOnAll(this, method, args);
-            }
+        _run : function () {
+            A.group._runOnAll.apply(null, [this].concat([].slice.call(arguments)));
         },
         play : function () {
-            this.run('play');
+            this._run('play');
             return this;
         },
         pause : function () {
-            this.run('pause');
+            this._run('pause');
             return this;
         },
         stop : function () {
-            this.run('stop');
+            this._run('stop');
             return this;
         },
         mute : function (bool) {
-            this.run('mute', [bool]);
+            this._run('mute', bool);
             return this;
         },
         volume : function (val) {
-            this.run('volume', [val]);
+            this._run('volume', val);
             return this;
         },
         loop : function (bool) {
-            this.run('loop', [bool]);
+            this._run('loop', bool);
             return this;
         }
     });

@@ -228,5 +228,4 @@
     window.Chapel = window.Chapel || {};
 
     window.Chapel.Audio = Audio;
-
 }());

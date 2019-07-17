@@ -28,7 +28,7 @@ function processStyles (dir, out, name) {
 
 // linting 
 function lint () {
-    return gulp.src('./src/js')
+    return gulp.src('./src/js/*.js')
         .pipe(jshint())
         .pipe(jshint.reporter('default', { beep : true }));
 }
@@ -44,6 +44,7 @@ function rimraf () {
 // build functions
 function buildScripts () {
     var jsFiles = [
+        'vendor/detect.js',
         'options.js',
         'get.js',
         'audio.js',
@@ -52,7 +53,6 @@ function buildScripts () {
         'list.js',
         'extensions.js',
         'controlpanel.js',
-        'detect.js',
         'preload.js',
         'state.js',
         'setup.js',

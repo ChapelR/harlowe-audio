@@ -65,7 +65,7 @@
     var configsFromPassage = null;
 
     if ($configPassage.length) {
-        var cfgLines = parseBlock($configPassage.text())
+        var cfgLines = parseBlock($configPassage.text());
 
         var userOptions = {};
 
