@@ -4,7 +4,7 @@ input#audio-volume {
 }
 span#vol-title {
   position: relative;
-  bottom: -2em;
+  bottom: -1em;
   font-size: 1rem;
   float: left;
 }

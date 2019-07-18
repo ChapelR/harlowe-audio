@@ -9,7 +9,7 @@
         globalA : true,
         showControls : true,
         sidebarStartClosed : true,
-        volumeDisplay : true,
+        volumeDisplay : false,
         trackLoadLimit : 500,
         totalLoadLimit : 8000,
         debug : false

@@ -1,5 +1,9 @@
 ## v2 Series Releases
 
+### v2.0.1
+
+Fixed error in the volume display.
+
 ### v2.0.0
 
 This version of HAL includes a vast array of usability improvements, including the introduction of special passages, audio macros, and a variety of other features.
