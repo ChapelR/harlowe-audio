@@ -1,5 +1,6 @@
 :: hal.config
 volumeDisplay: false
+debug: true
 
 :: hal.tracks
 beep: ./audio/beep.mp3, ./audio/beep.ogg
@@ -34,10 +35,8 @@ A.menu.links.add('Removes self.', function () {
 Welcome to the Harlowe Audio Library demo!
 
 * (link-repeat: "View this demo's source code.")[(open-url: 'https://github.com/ChapelR/harlowe-audio/tree/master/docs/demo')]
-* (link-repeat: "Read the documentation.")[(open-url: 'https://twinelab.net/harlowe-audio/#/')]
-* (link-repeat: "Download the library.")[(open-url: 'https://drive.google.com/file/d/1ThjHsBDzAwYNLc0p8g_V1fC-dLhBc8EH/view')]
-
-(print: (masteraudio: 'getvolume'))
+* (link-repeat: "Read the documentation.")[(open-url: 'https://hal.twinelab.net/')]
+* (link-repeat: "Download the library.")[(open-url: 'https://github.com/ChapelR/harlowe-audio/releases')]
 
 Tests:
 {
@@ -88,3 +87,9 @@ Tests:
 This is another passage!
 
 [[Go back.|Start]]
+|secret>[ [[testbed]] ]
+
+:: testbed
+<!-- for targeted testing -->
+(masteraudio: 'stopall')
+<script>A.playlist('test').playWithTrackBetween('organ')</script>
