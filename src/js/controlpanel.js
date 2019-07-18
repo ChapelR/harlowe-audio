@@ -1,7 +1,9 @@
 (function () {
     'use strict';
 
-    if (options.controls.show) {
+    var options = Chapel.options;
+
+    if (options.showControls) {
 
         var $user = $(document.createElement('div'))
             .attr('id', 'story-menu')
@@ -11,7 +13,7 @@
             .attr('id', 'vol-title')
             .append('Volume');
 
-        if (!options.controls.volumeDisplay) {
+        if (!options.volumeDisplay) {
             $volTitle.css('display', 'none');
         }
 
@@ -23,7 +25,8 @@
                 max : 99,
                 step : 1,
                 title : 'Volume'
-            });
+            })
+            .addClass('hal');
 
         var starting = Math.trunc(window.Chapel.Audio.master.volume * 100);
         if (starting < 0) {
@@ -73,7 +76,7 @@
             .append($user, $volTitle, $volume, $mute, $toggle)
             .appendTo(document.body);
 
-        if (options.controls.startClosed) {
+        if (options.sidebarStartClosed) {
             $panel.addClass('closed');
         }
 

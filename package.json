@@ -1,6 +1,6 @@
 {
   "name": "harlowe-audio",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "Audio library for Twine2/Harlowe2.",
   "main": "gulpfile.js",
   "directories": {
@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "del": "^3.0.0",
+    "fs-jetpack": "^2.2.2",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-clean-css": "^3.10.0",
@@ -16,16 +17,20 @@
     "gulp-jshint": "^2.1.0",
     "gulp-rename": "^1.4.0",
     "gulp-replace": "^1.0.0",
+    "gulp-tap": "^1.0.1",
     "gulp-uglify": "^3.0.2",
-    "jshint": "^2.10.2"
+    "jshint": "^2.10.2",
+    "node-zip": "^1.1.1"
   },
   "devDependencies": {},
   "scripts": {
     "test": "tweego -f harlowe-3 --head=test/head.html -o test/index.html dist test/twee && start test/index.html",
+    "test.2": "tweego -f harlowe-2 --head=test/head.html -o test/2.html dist test/twee",
     "gulp": "gulp",
     "clean": "gulp clean",
     "build": "gulp build",
-    "go": "npm run build && npm test",
+    "pack": "node pack.js",
+    "go": "npm run build && npm test && npm run test.2",
     "docs": "docsify serve ./docs -o"
   },
   "keywords": [

@@ -1,9 +1,11 @@
 (function () {
     'use strict';
 
+    var options = Chapel.options;
+
     // userland sidebar editing
 
-    if (options.controls.show) {
+    if (options.showControls) {
 
         var _engine = Engine;
 

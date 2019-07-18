@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var options = Chapel.options;
+
     var _state = State;
 
     var $overlay = $((document).createElement('div'))
@@ -21,6 +23,7 @@
     }
 
     function loadSources () { 
+        Chapel.debug('This is a mobile browser -> ', $.browser.mobile);
         if (_state.pastLength || _state.futureLength || $.browser.mobile) {
             // do not re-preload
             return;
@@ -42,7 +45,7 @@
             return tr.id;
         });
 
-        if (options.forceDismiss) {
+        if (options.totalLoadLimit > 0) {
             /**
               *  Dismiss loading screen once tolerance for waiting is expired.
               *  This will ensure that unreliable connections, like on mobile data,
@@ -52,7 +55,7 @@
              **/
             setTimeout( function () {
                 loaderDismiss();
-            }, options.loadLimit.total);
+            }, options.totalLoadLimit);
         }
 
         function _load () {
@@ -74,7 +77,7 @@
 
                     var _done = false;
 
-                    track.$el.one('canplay', function () {
+                    track.$el.one('canplaythrough.hal', function () {
                         _load();
                         _done = true;
                     });
@@ -83,9 +86,9 @@
                         if (_done) {
                             return;
                         }
-                        track.$el.off('canplay');
+                        track.$el.off('canplaythrough.hal');
                         _load();
-                    }, options.loadLimit.track);
+                    }, options.trackLoadLimit);
 
                 } else {
 

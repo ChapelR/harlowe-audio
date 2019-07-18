@@ -1,6 +1,6 @@
 input#audio-volume {
   width: 100%;
-  padding: 2em 0;
+  margin: 2em 0;
 }
 span#vol-title {
   position: relative;

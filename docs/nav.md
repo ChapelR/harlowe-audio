@@ -1,4 +1,4 @@
-* [Docs](/)
-* [API](API.md)
-* [Updates](changelog.md)
+* [Home](/)
+* [Docs](v2)
+* [Updates](changelog)
 * [Demo](./demo/ ':ignore')

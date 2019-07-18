@@ -1,17 +1,21 @@
+:: hal.config
+volumeDisplay: false
+
+:: hal.tracks
+beep: ./audio/beep.mp3, ./audio/beep.ogg
+nope: ./audio/no.mp3, ./audio/no.ogg
+que-pena: ./audio/que-pena.mp3, ./audio/que-pena.ogg
+cibelle: ./audio/cibelle.mp3, ./cibelle/no.ogg
+organ: http://www.kozco.com/tech/organfinale.wav, http://www.kozco.com/tech/organfinale.mp3
+
 :: audio-init [startup]
-<script>
-    A.newTrack('beep', './audio/beep.mp3', './audio/beep.ogg');
-    A.newTrack('nope', './audio/no.mp3', './audio/no.ogg');
-    A.newTrack('cibelle', './audio/cibelle.mp3', './audio/cibelle.ogg');
-    A.newTrack('que-pena', './audio/que-pena.mp3', './audio/que-pena.ogg');
-
-    A.createGroup('tests', 'beep', 'nope');
-    A.createGroup('bgm', 'cibelle', 'que-pena');
-    A.createPlaylist('bgm', 'cibelle', 'que-pena');
-    A.createPlaylist('test', 'beep', 'nope');
-
-    A.preload();
-</script>
+{
+(newplaylist: 'test', 'beep', 'nope')
+(newplaylist: 'bgm', 'cibelle', 'que-pena')
+(newgroup: 'tests', 'beep', 'nope')
+(newgroup: 'bgm', 'cibelle', 'que-pena')
+(masteraudio: 'preload')
+}
 
 :: story-menu [script]
 A.menu.links.add('Navigate', 'other passage');
@@ -26,40 +30,34 @@ A.menu.links.add('Removes self.', function () {
 });
 
 :: Start
-<script>A.playlist('bgm').random().loop(true).playWhenPossible();</script>\
+(track: (either: 'que-pena', 'cibelle'), 'playwhenpossible')\
 Welcome to the Harlowe Audio Library demo!
 
 * (link-repeat: "View this demo's source code.")[(open-url: 'https://github.com/ChapelR/harlowe-audio/tree/master/docs/demo')]
 * (link-repeat: "Read the documentation.")[(open-url: 'https://twinelab.net/harlowe-audio/#/')]
 * (link-repeat: "Download the library.")[(open-url: 'https://drive.google.com/file/d/1ThjHsBDzAwYNLc0p8g_V1fC-dLhBc8EH/view')]
 
+(print: (masteraudio: 'getvolume'))
+
 Tests:
 {
 (link-repeat: "Play a beep.")[
-    <script>
-        A.track('beep').play();
-    </script>
+    (track: 'beep', 'play')
 ]
 }
 {
 (link-repeat: "Play a different beep.")[
-    <script>
-        A.track('nope').play();
-    </script>
+    (track: 'nope', 'play')
 ]
 }
 {
 (link-repeat: "Halve the beeps' volumes.")[
-    <script>
-        A.group('tests').volume(0.5);
-    </script>
+    (group: 'tests', 'volume', 0.5)
 ]
 }
 {
 (link-repeat: "Restore the beeps' volumes.")[
-    <script>
-        A.group('tests').volume(1);
-    </script>
+    (group: 'tests', 'volume', 1)
 ]
 }
 {
@@ -71,52 +69,22 @@ Tests:
 ]
 }
 {
-(link-repeat: "Loop through the bacground playlist.")[
-    <script>
-        A.group('bgm').stop();
-        A.playlist('bgm').loop(true).play();
-    </script>
+(link-repeat: "Play audio from over the network.")[
+    (track: 'organ', 'play')
 ]
 }
 {
 (link-repeat: "Mute only the background music.")[
-    <script>
-        A.group('bgm').mute(true);
-    </script>
+    (group: 'bgm', 'mute', true)
 ]
 }
 {
 (link-repeat: "Unmute the background music.")[
-    <script>
-        A.group('bgm').mute(false);
-    </script>
+    (group: 'bgm', 'mute', false)
 ]
 }
-<!--
-[[stop test]]
-[[playlist test]]
--->
 
 :: other passage
 This is another passage!
 
 [[Go back.|Start]]
-
-:: stop test
-<span id='counter-test'>0</span>
-(link-repeat: 'test')[
-    <script>
-        A.track('beep').play();
-        A.track('beep').one(':stop', function () {
-            var x = Number($('#counter-test').text())
-            $('#counter-test').empty().append(++x);
-        });
-    </script>
-]
-
-:: playlist test
-(link-repeat: 'test')[
-    <script>
-        A.playlist('test').loop(true).play();
-    </script>
-]
