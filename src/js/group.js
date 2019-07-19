@@ -5,6 +5,8 @@
     var Track = A.classes.Track;
     var _extend = A.data._extend;
 
+    var playlistHeader = /(play)?list:(.+)/i;
+
     function createAudioGroup (groupName, trackIDs) {
         if (!trackIDs || !Array.isArray(trackIDs)) {
             trackIDs = [];
@@ -32,6 +34,13 @@
             this.members = A.groups.custom[name];
         } else {
             this.members = A.groups[name];
+        }
+        if (playlistHeader.test(name)) {
+            var listId = name.match(playlistHeader)[2];
+            if (listId && listId.trim()) {
+                // construct from playlist
+                this.members = A.playlist(listId).tracks;
+            }
         }
         if (!Array.isArray(this.members)) {
             this.members = [];
