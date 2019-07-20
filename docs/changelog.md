@@ -6,6 +6,7 @@ This update mostly addresses a few lingering issues in playlist handling.
 
 - Updated groups to import playlists using the syntax `playlist:listName`. This allows you to use group commands and methods on playlists without having to create a group that's just a mirror of a playlist.
 - Updated playlist methods to be more error resistant and fail more gracefully.
+- Fixed a critical bug in `hal.tracks` sources parsing.
 
 ### v2.0.1
 
