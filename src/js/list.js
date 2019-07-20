@@ -132,15 +132,26 @@
             return this.looping;
         },
         stop : function () {
-            var track = Track.get(this.current);
-            track.stop();
-            track.$el.off('.playlist');
+            if (this.current && this.isPlaying()) {
+                var track = this.nowPlaying();
+                if (track) {
+                    track.stop();
+                    track.$el.off('.playlist');
+                }
+            } else {
+                this._run('stop');
+            }
             this.current = '';
             this.playing = false;
             return this;
         },
         pause : function () {
-            Track.get(this.current).pause();
+            if (this.current && this.isPlaying()) {
+                var track = this.nowPlaying();
+                if (track) {
+                    track.pause();
+                }
+            }
             this.playing = false;
             return this;
         }
