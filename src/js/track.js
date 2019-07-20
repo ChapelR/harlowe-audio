@@ -51,6 +51,8 @@
         }
         if (test) {
             sources = [].slice.call(arguments).slice(1);
+        } else if (typeof sources === 'string') {
+            sources = [sources];
         }
         // source mapper
         function mapSources (url) {
