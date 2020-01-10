@@ -65,3 +65,4 @@ typings/
 **.zip
 test/
 src/wrap/min.js
+src/wrap/min.css

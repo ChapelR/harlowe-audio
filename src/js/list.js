@@ -172,7 +172,7 @@
         try {
             var list = Playlist.list[id] || null;
             if (!list) {
-                throw new Error('Playlist "' + id + '" does not exist.');
+                throw new ReferenceError('There is no playlist with the id "' + id + '". Please check your spelling and capitalization.', 'list.js -> A.playlist()', 171);
             }
             return list;
         } catch (err) {

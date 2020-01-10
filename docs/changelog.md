@@ -1,5 +1,9 @@
 ## v2 Series Releases
 
+### v2.1.1
+
+- Internal improvements.
+
 ### v2.1.0
 
 This update mostly addresses a few lingering issues in playlist handling.

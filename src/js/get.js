@@ -174,7 +174,7 @@
     Chapel.debug('Story IFID -> ', Chapel.Get.IFID);
 
     if (Chapel.Get.version < 2) {
-        throw new Error('The Harlowe Audio Library is only designed to work with Harlowe 2 and 3; you appear to be using Harlowe 1 or an otherwise invalid story format.');
+        throw new Error('The Harlowe Audio Library is only designed to work with Harlowe 2 and 3; you appear to be using Harlowe 1 or an otherwise invalid story format.', 'get.js -> initialization', 176);
     }
 
     // set storage key for this story with IFID + Story Title

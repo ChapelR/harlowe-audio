@@ -153,9 +153,13 @@
         },
 
         get : function (id) {
-            return Track.list.find( function (track) {
+            var ret = Track.list.find( function (track) {
                 return track.id === id;
             });
+            if (!ret) {
+                throw new ReferenceError('There is no track with the id "' + id + '". Please check your spelling and capitalization.', 'track.js -> Track.get()', 155);
+            }
+            return ret;
         },
         removeFromDOM : function (track) {
             if (typeof track === 'string') {

@@ -7,11 +7,11 @@
 
     function _extend (api, newStuff) {
         if (typeof newStuff !== 'object') {
-            throw new Error('Invalid extension.');
+            throw new TypeError('Invalid extension.', 'extensions.js -> _extend()', 8);
         }
         Object.keys(newStuff).forEach( function (key) {
             if (api[key] !== undefined) {
-                throw new Error('Invalid extension: cannot clobber existing property "' + key + '"');
+                throw new Error('Invalid extension: cannot clobber existing property "' + key + '".', 'extensions.js -> _extend()', 8);
             }
             api[key] = newStuff[key];
         });

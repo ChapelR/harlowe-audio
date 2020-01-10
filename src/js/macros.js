@@ -67,7 +67,7 @@
                 return cmd;
             }
         }
-        throw new Error('Cannot run the command: "' + cmd + '" on the API "' + what + '". The command may be invalid, or this may be a bug in HAL.');
+        throw new ReferenceError('Cannot run the command: "' + cmd + '" on the API "' + what + '". The command may be invalid, or this may be a bug in HAL.', 'macros.js -> getCommand()', 10);
     }
 
     var macros = {

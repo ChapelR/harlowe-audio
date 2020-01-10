@@ -33,6 +33,9 @@
         if (Object.keys(A.groups.custom).includes(name)) {
             this.members = A.groups.custom[name];
         } else {
+            if (!A.groups[name] || !(A.groups[name] instanceof Array)) {
+                throw new ReferenceError('There is no group with the id "' + id + '". Please check your spelling and capitalization.', 'group.js -> A.group()', 29);
+            }
             this.members = A.groups[name];
         }
         if (playlistHeader.test(name)) {

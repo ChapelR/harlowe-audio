@@ -138,7 +138,7 @@
     };
     // error handler
     function bail (msg) {
-        throw new Error(msg);
+        throw new Error(msg, 'audio.js -> bail()', 140);
     }
 
     var validMaster = validEvents.track.concat(validEvents.master);
