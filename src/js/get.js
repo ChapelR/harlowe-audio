@@ -51,7 +51,7 @@
     if ($trackPassage.length) {
         var lines = parseBlock($trackPassage.text());
 
-        var tracks = new Map(lines.map( function (line) {
+        var tracks = new Map(Fast.map(lines, function (line) {
             var parts = parseLine(line);
             return [parts.key, parseSourceList(parts.value)];
         }));
@@ -132,7 +132,7 @@
     }
 
     // hack the macro API
-    var _macros = require('macros');
+    var _macros = require('macros'); // this is blocking :(
     function simpleMacro (name, cb) {
         _macros.add(name, function () {
             var arr = [].slice.call(arguments).slice(1);

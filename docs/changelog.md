@@ -1,8 +1,10 @@
 ## v2 Series Releases
 
-### v2.1.1
+### v2.2.0
 
-- Internal improvements.
+- Performance improvements.
+- Improvements in error reporting for authors.
+- Other internal improvements.
 
 ### v2.1.0
 
