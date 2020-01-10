@@ -36,7 +36,7 @@
     function saveTracks () {
         var data;
         try {
-            data = Chapel.Audio.classes.Track.list.map( function (track) {
+            data = Fast.map(Chapel.Audio.classes.Track.list, function (track) {
                 return {
                     id : track.id,
                     sources : track.sources
@@ -60,7 +60,7 @@
             }
             if (Array.isArray(data) && data.length) {
                 Chapel.debug('Session Loaded (Tracks) -> ', data);
-                data.forEach( function (def) {
+                Fast.forEach(data, function (def) { 
                     if (def.id && def.sources && !Chapel.Audio.classes.Track.has(def.id)) {
                         Chapel.Audio.newTrack.apply(null, [def.id].concat(def.sources));
                     } else {
@@ -79,9 +79,9 @@
         var data;
         try {
             var plList = Chapel.Audio.classes.Playlist.list;
-            data = Object.keys(plList).map( function (pl) {
+            data = Fast.map(Object.keys(plList), function (pl) {
                 var obj = {};
-                obj.tracks = plList[pl].tracks.map( function (tr) {
+                obj.tracks = Fast.map(plList[pl].tracks, function (tr) {
                     return tr.id;
                 });
                 obj.id = plList[pl].id;
@@ -104,7 +104,7 @@
             }
             if (data && Array.isArray(data) && data.length) {
                 Chapel.debug('Session Loaded (Playlists) -> ', data);
-                data.forEach( function (def) {
+                Fast.forEach(data, function (def) {
                     if (def.id && def.tracks) {
                         Chapel.Audio.createPlaylist(def.id, def.tracks);
                     }
@@ -121,8 +121,8 @@
         var data;
         try {
             data = {};
-            Object.keys(Chapel.Audio.groups.custom).forEach( function (gr) {
-                data[gr] = Chapel.Audio.groups.custom[gr].map( function (tr) {
+            Fast.forEach(Object.keys(Chapel.Audio.groups.custom), function (gr) {
+                data[gr] = Fast.map(Chapel.Audio.groups.custom[gr], function (tr) {
                     if (typeof tr === 'string') {
                         return tr;
                     }
@@ -146,8 +146,8 @@
             }
             if (data && typeof data === 'object') {
                 Chapel.debug('Session Loaded (Groups) -> ', data);
-                Object.keys(data).forEach( function (gr) {
-                    data[gr].map( function (tr) {
+                Fast.forEach(Object.keys(data), function (gr) {
+                    Fast.map(data[gr], function (tr) {
                         return Chapel.Audio.classes.Track.get(tr);
                     });
                 });

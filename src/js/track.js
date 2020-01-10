@@ -71,7 +71,7 @@
         }
         // create it
         var $audio = $(document.createElement('audio'));
-        sources.forEach( function (src) {
+        Fast.forEach(sources, function (src) {
             $(document.createElement('source'))
                 .attr({
                     src : src,
@@ -110,7 +110,7 @@
         },
 
         has : function (id) {
-            return Track.list.some( function (track) {
+            return Fast.some(Track.list, function (track) {
                 return track.id === id;
             });
         },
@@ -140,20 +140,20 @@
         },
 
         renew : function () {
-            Track.list.forEach( function (track) {
+            Fast.forEach(Track.list, function (track) {
                 track.mute(track.isMuted());
                 track.volume(track.getVolume());
             });
         },
 
         getIdx : function (id) {
-            return Track.list.findIndex( function (track) {
+            return Fast.findIndex(Track.list, function (track) {
                 return track.id === id;
             });
         },
 
         get : function (id) {
-            var ret = Track.list.find( function (track) {
+            var ret = Fast.find(Track.list, function (track) {
                 return track.id === id;
             });
             if (!ret) {
@@ -178,7 +178,7 @@
             if (!Track.prototype.hasOwnProperty(method)) {
                 return;
             }
-            list.forEach( function (track) {
+            Fast.forEach(Track.list, function (track) { 
                 if (!Track.is(track)) {
                     track = Track.get(track) || null;
                 }
@@ -319,7 +319,7 @@
         addToGroup : function (group, custom) {
             var self = this;
             var gr = custom ? A.groups.custom[group] : A.groups[group];
-            if (!gr.some( function (tr) {
+            if (!Fast.some(gr, function (tr) {
                 return self.id === tr.id;
             })) {
                 gr.push(this);
@@ -329,7 +329,7 @@
         removeFromGroup : function (group, custom) {
             var self = this;
             var gr = custom ? A.groups.custom[group] : A.groups[group];
-            var idx = gr.findIndex( function (track) {
+            var idx = Fast.findIndex(gr, function (track) { 
                 return track.id && track.id === self.id;
             });
             gr.splice(idx, 1);

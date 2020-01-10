@@ -87,7 +87,7 @@
             var self = this;
             i = i || (function () {
                 if (self.current) {
-                    return self.tracks.findIndex( function (tr) {
+                    return Fast.findIndex(self.tracks, function (tr) {
                         return tr.id === self.current;
                     });
                 } else {

@@ -13,9 +13,9 @@
     var closeQuote = /["']$/;
 
     function parseBlock (block) {
-        return block.split(lineBreak).filter( function (line) {
+        return Fast.map(Fast.filter(block.split(lineBreak), function (line) { 
             return line && line.trim() && line.includes(':');
-        }).map( function (line) {
+        }), function (line) { 
             return line.trim();
         });
     }
@@ -37,7 +37,7 @@
     }
 
     function parseSourceList (sourceList) {
-        return sourceList.split(',').map( function (source) {
+        return Fast.map(sourceList.split(','), function (source) { 
             return cleanString(source);
         });
     }
@@ -69,18 +69,18 @@
 
         var userOptions = {};
 
-        cfgLines.map( function (line) {
+        Fast.forEach(Fast.map(cfgLines, function (line) { 
             var parts = parseLine(line);
 
             return parts;
-        }).forEach( function (pair) {
+        }), function (pair) { 
             userOptions[pair.key] = pair.value;
         });
         configsFromPassage = userOptions;
     }
 
     if (configsFromPassage) {
-        Object.keys(configsFromPassage).forEach( function (option) {
+        Fast.forEach(Object.keys(configsFromPassage), function (option) {
             var configName = option, 
                 toSet = userOptions[option],
                 type = typeof Chapel.options[option];
@@ -149,7 +149,7 @@
         if (!obj || typeof obj !== 'object') {
             return;
         }
-        Object.keys(obj).forEach( function (macro) {
+        Fast.forEach(Object.keys(obj), function (macro) { 
             simpleMacro(macro, obj[macro]);
         });
     }

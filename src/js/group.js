@@ -11,7 +11,7 @@
         if (!trackIDs || !Array.isArray(trackIDs)) {
             trackIDs = [];
         }
-        A.groups.custom[groupName] = trackIDs.map( function (id) {
+        A.groups.custom[groupName] = Fast.map(trackIDs, function (id) { 
             return Track.get(id);
         });
     }

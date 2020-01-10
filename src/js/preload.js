@@ -41,7 +41,7 @@
             setTimeout(loaderDismiss, delay);
             return;
         }
-        var ids = trackList.map( function (tr) {
+        var ids = Fast.map(trackList, function (tr) { 
             return tr.id;
         });
 
