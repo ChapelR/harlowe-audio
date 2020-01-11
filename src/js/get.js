@@ -13,9 +13,9 @@
     var closeQuote = /["']$/;
 
     function parseBlock (block) {
-        return block.split(lineBreak).filter( function (line) {
+        return Fast.map(Fast.filter(block.split(lineBreak), function (line) { 
             return line && line.trim() && line.includes(':');
-        }).map( function (line) {
+        }), function (line) { 
             return line.trim();
         });
     }
@@ -37,7 +37,7 @@
     }
 
     function parseSourceList (sourceList) {
-        return sourceList.split(',').map( function (source) {
+        return Fast.map(sourceList.split(','), function (source) { 
             return cleanString(source);
         });
     }
@@ -51,7 +51,7 @@
     if ($trackPassage.length) {
         var lines = parseBlock($trackPassage.text());
 
-        var tracks = new Map(lines.map( function (line) {
+        var tracks = new Map(Fast.map(lines, function (line) {
             var parts = parseLine(line);
             return [parts.key, parseSourceList(parts.value)];
         }));
@@ -69,18 +69,18 @@
 
         var userOptions = {};
 
-        cfgLines.map( function (line) {
+        Fast.forEach(Fast.map(cfgLines, function (line) { 
             var parts = parseLine(line);
 
             return parts;
-        }).forEach( function (pair) {
+        }), function (pair) { 
             userOptions[pair.key] = pair.value;
         });
         configsFromPassage = userOptions;
     }
 
     if (configsFromPassage) {
-        Object.keys(configsFromPassage).forEach( function (option) {
+        Fast.forEach(Object.keys(configsFromPassage), function (option) {
             var configName = option, 
                 toSet = userOptions[option],
                 type = typeof Chapel.options[option];
@@ -132,7 +132,7 @@
     }
 
     // hack the macro API
-    var _macros = require('macros');
+    var _macros = require('macros'); // this is blocking :(
     function simpleMacro (name, cb) {
         _macros.add(name, function () {
             var arr = [].slice.call(arguments).slice(1);
@@ -149,7 +149,7 @@
         if (!obj || typeof obj !== 'object') {
             return;
         }
-        Object.keys(obj).forEach( function (macro) {
+        Fast.forEach(Object.keys(obj), function (macro) { 
             simpleMacro(macro, obj[macro]);
         });
     }
@@ -174,7 +174,7 @@
     Chapel.debug('Story IFID -> ', Chapel.Get.IFID);
 
     if (Chapel.Get.version < 2) {
-        throw new Error('The Harlowe Audio Library is only designed to work with Harlowe 2 and 3; you appear to be using Harlowe 1 or an otherwise invalid story format.');
+        throw new Error('The Harlowe Audio Library is only designed to work with Harlowe 2 and 3; you appear to be using Harlowe 1 or an otherwise invalid story format.', 'get.js -> initialization', 176);
     }
 
     // set storage key for this story with IFID + Story Title

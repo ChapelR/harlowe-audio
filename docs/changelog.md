@@ -1,5 +1,11 @@
 ## v2 Series Releases
 
+### v2.2.0
+
+- Performance improvements.
+- Improvements in error reporting for authors.
+- Other internal improvements.
+
 ### v2.1.0
 
 This update mostly addresses a few lingering issues in playlist handling.

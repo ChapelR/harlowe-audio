@@ -45,6 +45,7 @@ function rimraf () {
 function buildScripts () {
     var jsFiles = [
         'vendor/detect.js',
+        'fast.js',
         'options.js',
         'get.js',
         'audio.js',

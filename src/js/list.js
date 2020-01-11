@@ -87,7 +87,7 @@
             var self = this;
             i = i || (function () {
                 if (self.current) {
-                    return self.tracks.findIndex( function (tr) {
+                    return Fast.findIndex(self.tracks, function (tr) {
                         return tr.id === self.current;
                     });
                 } else {
@@ -172,7 +172,7 @@
         try {
             var list = Playlist.list[id] || null;
             if (!list) {
-                throw new Error('Playlist "' + id + '" does not exist.');
+                throw new ReferenceError('There is no playlist with the id "' + id + '". Please check your spelling and capitalization.', 'list.js -> A.playlist()', 171);
             }
             return list;
         } catch (err) {

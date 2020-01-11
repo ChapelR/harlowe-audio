@@ -93,7 +93,7 @@
             if (!Audio.classes.Track) {
                 return;
             }
-            Audio.classes.Track.list.forEach( function (tr) {
+            Fast.forEach(Audio.classes.Track.list, function (tr) { 
                 tr.stop();
             });
         },
@@ -138,7 +138,7 @@
     };
     // error handler
     function bail (msg) {
-        throw new Error(msg);
+        throw new Error(msg, 'audio.js -> bail()', 140);
     }
 
     var validMaster = validEvents.track.concat(validEvents.master);
@@ -148,13 +148,13 @@
         if (!type || typeof type !== 'string' || !type.trim()) {
             return null;
         }
-        var events = type.split(' ').map( function (type) {
+        var events = Fast.filter(Fast.map(type.split(' '), function (type) { 
             type = type.split('.')[0];
             if (type[0] !== ':') {
                 type = ':' + type;
             }
             return type + '.userland';
-        }).filter( function (type) {
+        }), function (type) { 
             if (master) {
                 return validMaster.includes(type);
             }
