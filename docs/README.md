@@ -26,7 +26,7 @@ See [below](#guide) for a guide on the basics of using HAL.
 - [Downloads](https://github.com/ChapelR/harlowe-audio/releases)
 - [Changelog](changelog)
 - [Release Notes](https://twinelab.net/blog/tags/hal/)
-- [Demo](./demo/ ':ignore')
+- [Demo](https://hal.twinelab.net/demo/ ':ignore')
 - [HAL v2 Complete Documentation](v2)
 - [HAL v1 Complete Documentation](v1)
 
