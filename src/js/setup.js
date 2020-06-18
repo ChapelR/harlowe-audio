@@ -11,7 +11,7 @@
     if (Chapel.Get.fromPassage) {
         Chapel.debug('Loading tracks from track def special passage -> ', Chapel.Get.fromPassage);
         // autoload tracks from the `hal.tracks` special passage
-        Chapel.Get.fromPassage.forEach( function (sources, name) { 
+        Chapel.Get.fromPassage.forEach( function (sources, name) {
             Chapel.Audio.newTrack.apply(null, [name].concat(sources));
         });
     }

@@ -1,5 +1,9 @@
 ## v2 Series Releases
 
+### v2.2.1
+
+- When a malformed track definition is encountered, HAL will now report the error in the console and carry on loading the definitions that it can.
+
 ### v2.2.0
 
 - Performance improvements.

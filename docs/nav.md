@@ -1,4 +1,4 @@
 * [Home](/)
 * [Docs](v2)
 * [Updates](changelog)
-* [Demo](./demo/ ':ignore')
+* [Demo](https://hal.twinelab.net/demo/ ':ignore')

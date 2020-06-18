@@ -67,6 +67,7 @@
             if (!Object.keys(formatMap).includes(end)) {
                 bail('Track: unsupported file type "' + end + '"');
             }
+            
             return formatMap[end];
         }
         // create it
