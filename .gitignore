@@ -63,6 +63,7 @@ typings/
 **.sublime-*
 *.bat
 **.zip
+**.log
 test/
 src/wrap/min.js
 src/wrap/min.css

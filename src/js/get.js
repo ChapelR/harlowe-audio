@@ -30,14 +30,14 @@
 
     function parseLine (line) {
         var parsed = line.match(parseLn);
-        return { 
+        return parsed instanceof Array ? { 
             key : cleanString(parsed[1]), 
             value : cleanString(parsed[2]) 
-        };
+        } : line;
     }
 
     function parseSourceList (sourceList) {
-        return Fast.map(sourceList.split(','), function (source) { 
+        return Fast.map(sourceList.split(','), function (source) {
             return cleanString(source);
         });
     }
@@ -51,11 +51,22 @@
     if ($trackPassage.length) {
         var lines = parseBlock($trackPassage.text());
 
-        var tracks = new Map(Fast.map(lines, function (line) {
+        var iterator = [];
+        var errors = [];
+
+        Fast.forEach(lines, function (line) {
             var parts = parseLine(line);
-            return [parts.key, parseSourceList(parts.value)];
-        }));
-        tracksFromPassage = tracks;
+            if (typeof parts === "string") {
+                errors.push(parts);
+            }
+            iterator.push([parts.key, parseSourceList(parts.value)]);
+        });
+
+        if (errors.length) {
+            console.error("Some track definitions could not be parsed:\n" + errors.join("\n") + "\nPlease check these definitions and try again.");
+        }
+
+        tracksFromPassage = new Map(iterator);
     }
 
     // user configs

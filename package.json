@@ -1,6 +1,6 @@
 {
   "name": "harlowe-audio",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Audio library for Twine2/Harlowe2.",
   "main": "gulpfile.js",
   "directories": {
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "del": "^3.0.0",
-    "fs-jetpack": "^2.2.2",
+    "fs-jetpack": "^2.4.0",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-clean-css": "^3.10.0",
@@ -19,7 +19,7 @@
     "gulp-replace": "^1.0.0",
     "gulp-tap": "^1.0.1",
     "gulp-uglify": "^3.0.2",
-    "jshint": "^2.10.2",
+    "jshint": "^2.11.1",
     "node-zip": "^1.1.1"
   },
   "devDependencies": {},

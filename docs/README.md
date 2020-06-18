@@ -1,6 +1,6 @@
 # What is HAL?
 
-[Try out the demo.](./demo/ ':ignore')
+[Try out the demo.](https://hal.twinelab.net/demo/ ':ignore')
 
 HAL is an audio library for [Harlowe (v2.1.0 or higher)](https://twine2.neocities.org/) designed to give the format feature parity (or close to it) with [SugarCube's audio subsystem](http://www.motoslave.net/sugarcube/2/docs/#simpleaudio-api). This library was designed from the ground up *specifically* for use with Harlowe, and is intended to be as easy to use as possible for novice programmers without compromising functionality.
 
