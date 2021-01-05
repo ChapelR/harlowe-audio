@@ -1,3 +1,5 @@
+> Testing with v3.2.0 of Harlowe is ongoing. If you encounter any issues or problems when using the new version of Harlowe with HAL, please report them by opening an [issue](https://github.com/ChapelR/harlowe-audio/issues/new).
+
 # What is HAL?
 
 [Try out the demo.](https://hal.twinelab.net/demo/ ':ignore')
