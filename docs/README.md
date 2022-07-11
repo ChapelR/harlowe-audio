@@ -1,4 +1,5 @@
-> Testing with v3.2.0 of Harlowe is ongoing. If you encounter any issues or problems when using the new version of Harlowe with HAL, please report them by opening an [issue](https://github.com/ChapelR/harlowe-audio/issues/new).
+> [!ATTENTION]
+> Unfortunately, HAL no longer works in Harlowe versions 3.3.0 and higher. If you want to continue to use HAL, you will need to stay on version 3.2.3 or lower. It is unknown at this point whether HAL can be made compatible with Harlowe 3.3.0 and higher, or how long it would take if so. If you believe Harlowe needs audio support, I encourage you to create or comment on issues in [the Harlowe source code repository](https://foss.heptapod.net/games/harlowe/-/issues) to that effect, as the last few versions of Harlowe have featured dramatic changes and I don't know if I will be able to catch up, or if it's even worth it to try if 3.4.0 or 4.0.0 is just gonna come out with even more breaking changes.
 
 # What is HAL?
 
