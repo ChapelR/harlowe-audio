@@ -145,7 +145,7 @@
     // hack the macro API
     var _macros = require('macros'); // this is blocking :(
     function simpleMacro (name, cb) {
-        _macros.add(name, function () {
+        _macros.add(name, 'Any', function () {
             var arr = [].slice.call(arguments).slice(1);
             var result = cb.apply(null, arr);
             if (typeof result === 'string' || typeof result === 'boolean' || typeof result === 'number') {
