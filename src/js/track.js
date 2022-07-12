@@ -179,7 +179,7 @@
             if (!Track.prototype.hasOwnProperty(method)) {
                 return;
             }
-            Fast.forEach(Track.list, function (track) { 
+            Fast.forEach(list, function (track) { 
                 if (!Track.is(track)) {
                     track = Track.get(track) || null;
                 }

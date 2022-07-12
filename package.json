@@ -1,6 +1,6 @@
 {
   "name": "harlowe-audio",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Audio library for Twine2/Harlowe2.",
   "main": "gulpfile.js",
   "directories": {
@@ -24,8 +24,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "tweego -f harlowe-3 --head=test/head.html -o test/index.html dist test/twee && start test/index.html",
-    "test.2": "tweego -f harlowe-2 --head=test/head.html -o test/2.html dist test/twee",
+    "test": "tweego -f harlowe-3 -o test/index.html dist test/twee && start test/index.html",
+    "test.2": "tweego -f harlowe-2 -o test/2.html dist test/twee",
     "gulp": "gulp",
     "clean": "gulp clean",
     "build": "gulp build",

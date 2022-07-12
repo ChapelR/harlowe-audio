@@ -1,5 +1,11 @@
 ## v2 Series Releases
 
+### v2.3.0
+
+- Fixed macro issues for Harlowe 3.3.0 and later. (Thank you to webbedspace/Leon for the PR!)
+- Fixed issue with track group control runner. Not sure how long this has been an issue, at least since v2.2.0.
+- Other minor changes.
+
 ### v2.2.1
 
 - When a malformed track definition is encountered, HAL will now report the error in the console and carry on loading the definitions that it can.

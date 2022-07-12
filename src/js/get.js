@@ -119,19 +119,37 @@
         if (sem) {
             return semVer;
         }
-        var major = semVer.split('.')[0];
+        var arr = semVer.split('.');
+        var major = arr[0];
+        var minor = arr[1];
+        var patch = arr[2];
         major = Number(major);
+        minor = Number(minor);
         if (Number.isNaN(major)) {
             major = 3;
+        }
+        if (Number.isNaN(minor)) {
+            minor = 3;
+        }
+        if (Number.isNaN(patch)) {
+            patch = 0;
         }
         if (major < 1) {
             major = 3;
         }
-        return major;
+        return [major, minor, patch];
+    }
+
+    function oldMacroAPI () {
+        var version = getHarloweVersion();
+        if (version[0] >= 3 && version[1] >= 3) {
+            return false;
+        }
+        return true;
     }
 
     function version3OrLater () {
-        return getHarloweVersion() >= 3;
+        return getHarloweVersion()[0] >= 3;
     }
 
     function getStoryTitle () {
@@ -142,10 +160,8 @@
         return $dataChunk.attr('ifid');
     }
 
-    // hack the macro API
-    var _macros = require('macros'); // this is blocking :(
-    function simpleMacro (name, cb) {
-        _macros.add(name, 'Any', function () {
+    function simpleMacroRun (cb) {
+        return function () {
             var arr = [].slice.call(arguments).slice(1);
             var result = cb.apply(null, arr);
             if (typeof result === 'string' || typeof result === 'boolean' || typeof result === 'number') {
@@ -153,7 +169,20 @@
                 return result;
             }
             return '';
-        }, _macros.TypeSignature.zeroOrMore(_macros.TypeSignature.Any));
+        }
+    }
+
+    // hack the macro API
+    var _macros = require('macros'); // this is blocking :(
+    function simpleMacro (name, cb) {
+        // test for old macro API (3.2.3 and lower)
+        if (oldMacroAPI()) {
+            // if old
+            _macros.add(name, simpleMacroRun(cb), _macros.TypeSignature.zeroOrMore(_macros.TypeSignature.Any));
+        } else {
+            // if new (3.3.0 and higher)
+            _macros.add(name, 'Any', simpleMacroRun(cb), _macros.TypeSignature.zeroOrMore(_macros.TypeSignature.Any));
+        }
     }
 
     function addMacros (obj) {
@@ -171,20 +200,21 @@
         add : addMacros
     };
 
-    window.Chapel.Get = {
+    window.Chapel.Get = Object.freeze({
         version : getHarloweVersion(),
         isHarlowe3OrLater : version3OrLater(),
         storyTitle : getStoryTitle(),
         IFID : getStoryIFID(),
+        useOldMacroAPI : oldMacroAPI(),
         fromPassage : tracksFromPassage
-    };
+    });
 
-    Chapel.debug('Harlowe Version -> ', getHarloweVersion(true));
-    Chapel.debug('Harlowe Major Version -> ', Chapel.Get.version);
+    Chapel.debug('Harlowe Version -> ', Chapel.Get.version.join("."));
+    Chapel.debug('Harlowe Major Version -> ', Chapel.Get.version[0]);
     Chapel.debug('Story Title -> ', Chapel.Get.storyTitle);
     Chapel.debug('Story IFID -> ', Chapel.Get.IFID);
 
-    if (Chapel.Get.version < 2) {
+    if (Chapel.Get.version[0] < 2) {
         throw new Error('The Harlowe Audio Library is only designed to work with Harlowe 2 and 3; you appear to be using Harlowe 1 or an otherwise invalid story format.', 'get.js -> initialization', 176);
     }
 

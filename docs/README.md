@@ -1,3 +1,6 @@
+> [!WARNING]
+> Testing with v3.3.0 of Harlowe is ongoing. Please report any errors or problems [here](https://github.com/ChapelR/harlowe-audio/issues).
+
 # What is HAL?
 
 [Try out the demo.](https://hal.twinelab.net/demo/ ':ignore')
